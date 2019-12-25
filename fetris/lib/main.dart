@@ -46,7 +46,7 @@ class _TetrisBoardState extends State<TetrisBoard> {
   @override
   void initState() {
     super.initState();
-    Timer.periodic(new Duration(seconds: 1), (Timer timer) {
+    Timer.periodic(new Duration(milliseconds: 500), (Timer timer) {
       setState(() {
         _tetrominoes = _tetrominoes.map(_advance).toList();
       });
