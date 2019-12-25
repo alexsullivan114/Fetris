@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -16,67 +15,83 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: SafeArea(child: TetrisBoard()),
+      home: SafeArea(child: LayoutBuilder(builder: (context, constraints) {
+        return TetrisBoard(constraints);
+      })),
     );
   }
 }
 
 class TetrisBoard extends StatefulWidget {
+  final BoxConstraints _constraints;
+
+  TetrisBoard(this._constraints);
+
   @override
-  _TetrisBoardState createState() => _TetrisBoardState();
+  _TetrisBoardState createState() => _TetrisBoardState(_constraints);
 }
 
 class _TetrisBoardState extends State<TetrisBoard> {
   List<TetrominoePosition> _tetrominoes = [
-    TetrominoePosition(Tetrominoe.SQUARE, 0, 0)
+    TetrominoePosition(Tetrominoe.L, 0, 0)
   ];
+
+  final BoxConstraints _constraints;
+  final double _blockSize;
+
+  _TetrisBoardState(BoxConstraints _constraints)
+      : _constraints = _constraints,
+        _blockSize = _constraints.maxWidth.floor() / 8;
 
   @override
   void initState() {
     super.initState();
     Timer.periodic(new Duration(seconds: 1), (Timer timer) {
       setState(() {
-        _tetrominoes = _tetrominoes.map((tetrominoePosition) {
-          return TetrominoePosition(
-              tetrominoePosition.tetrominoe,
-              tetrominoePosition.verticalOffsetCount + 1,
-              tetrominoePosition.horizontalOffsetCount);
-        }).toList();
+        _tetrominoes = _tetrominoes.map(_advance).toList();
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return CustomPaint(
-          painter: ShapesPainter(_tetrominoes),
-        );
-      }
+    return CustomPaint(
+      painter: ShapesPainter(_tetrominoes, _blockSize),
     );
   }
 
-  TetrominoePosition _advance(TetrominoePosition tetrominoePosition) {}
+  TetrominoePosition _advance(TetrominoePosition tetrominoePosition) {
+    double totalVerticalBlockCount = _constraints.maxHeight.ceil() / _blockSize;
+    int tetrominoeHeight = _tetrominoeHeight(tetrominoePosition.tetrominoe);
+    int maxBlockCount = (totalVerticalBlockCount - tetrominoeHeight).floor();
+    if (tetrominoePosition.verticalOffsetCount >= maxBlockCount) {
+      return tetrominoePosition;
+    } else {
+      return TetrominoePosition(
+          tetrominoePosition.tetrominoe,
+          tetrominoePosition.verticalOffsetCount + 1,
+          tetrominoePosition.horizontalOffsetCount);
+    }
+  }
 }
 
 class ShapesPainter extends CustomPainter {
   final List<TetrominoePosition> _tetrominoes;
+  final double _blockSize;
 
-  ShapesPainter(this._tetrominoes);
+  ShapesPainter(this._tetrominoes, this._blockSize);
 
   @override
   void paint(Canvas canvas, Size size) {
-    double blockSize = size.width.floor() / 8;
     _tetrominoes.forEach((tetrominoePosition) {
       drawTetrominoes(
           tetrominoePosition.tetrominoe,
           canvas,
-          blockSize,
+          _blockSize,
           tetrominoePosition.verticalOffsetCount,
           tetrominoePosition.horizontalOffsetCount);
     });
-    drawGrid(canvas, blockSize, size);
+    drawGrid(canvas, _blockSize, size);
   }
 
   @override
@@ -100,3 +115,23 @@ void drawGrid(Canvas canvas, double blockSize, Size screenSize) {
 }
 
 enum Tetrominoe { STRAIGHT, SQUARE, T, L, S }
+
+int _tetrominoeHeight(Tetrominoe tetrominoe) {
+  switch (tetrominoe) {
+    case Tetrominoe.STRAIGHT:
+      return 4;
+      break;
+    case Tetrominoe.SQUARE:
+      return 2;
+      break;
+    case Tetrominoe.T:
+      return 2;
+      break;
+    case Tetrominoe.L:
+      return 3;
+      break;
+    case Tetrominoe.S:
+      return 3;
+      break;
+  }
+}

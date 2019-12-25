@@ -30,7 +30,7 @@ void drawStraight(Canvas canvas, double blockSize, double verticalOffset,
     double horizontalOffset) {
   final shapePainter = Paint()..color = Colors.cyanAccent;
   final shapeRect = Rect.fromLTWH(horizontalOffset * blockSize,
-      verticalOffset * blockSize, blockSize, blockSize * 5);
+      verticalOffset * blockSize, blockSize, blockSize * 4);
   canvas.drawRect(shapeRect, shapePainter);
 }
 
