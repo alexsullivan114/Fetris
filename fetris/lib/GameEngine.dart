@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+import 'Tetrominoe.dart';
 import 'TetrominoePosition.dart';
-import 'main.dart';
 
 class GameEngine {
   BoxConstraints _constraints;
@@ -19,6 +19,25 @@ class GameEngine {
   GameEngine tick() {
     TetrominoePosition active = tetrominoes[0];
     TetrominoePosition advancedActive = _advance(active);
+    if (tetrominoes.length > 1) {
+      for (TetrominoePosition existing in tetrominoes.sublist(1)) {
+        if (advancedActive.collidesWith(existing)) {
+          TetrominoePosition nextActive =
+              TetrominoePosition(Tetrominoe.SQUARE, 0, 0);
+          tetrominoes.insert(0, nextActive);
+          return this;
+        }
+      }
+    } else {
+      tetrominoes[0] = advancedActive;
+      if (advancedActive == active) {
+        TetrominoePosition nextActive =
+            TetrominoePosition(Tetrominoe.SQUARE, 0, 0);
+        tetrominoes.insert(0, nextActive);
+        return this;
+      }
+    }
+
     tetrominoes[0] = advancedActive;
 
     return this;
@@ -36,27 +55,5 @@ class GameEngine {
           tetrominoePosition.verticalOffsetCount + 1,
           tetrominoePosition.horizontalOffsetCount);
     }
-  }
-
-  int tetrominoeHeight(Tetrominoe tetrominoe) {
-    switch (tetrominoe) {
-      case Tetrominoe.STRAIGHT:
-        return 4;
-        break;
-      case Tetrominoe.SQUARE:
-        return 2;
-        break;
-      case Tetrominoe.T:
-        return 2;
-        break;
-      case Tetrominoe.L:
-        return 3;
-        break;
-      case Tetrominoe.S:
-        return 3;
-        break;
-    }
-
-    return 0;
   }
 }

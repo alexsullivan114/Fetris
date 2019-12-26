@@ -18,5 +18,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-enum Tetrominoe { STRAIGHT, SQUARE, T, L, S }
