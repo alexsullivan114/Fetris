@@ -1,21 +1,25 @@
 import 'dart:math';
 
-import 'package:flutter/widgets.dart';
-
 import 'Tetrominoe.dart';
 import 'TetrominoePosition.dart';
 
 class GameEngine {
-  BoxConstraints _constraints;
   double blockSize;
+  double screenWidth;
+  double screenHeight;
+  GameState _gameState = GameState.IDLE;
 
   List<TetrominoePosition> tetrominoes = [];
 
-  GameEngine(BoxConstraints _constraints) {
-    TetrominoePosition active = TetrominoePosition(Tetrominoe.L, 0, 0);
-    this._constraints = _constraints;
-    this.blockSize = _constraints.maxWidth.floor() / 8;
-    tetrominoes.add(active);
+  void initialize(double screenWidth, double screenHeight) {
+    if (_gameState == GameState.IDLE) {
+      _gameState = GameState.ACTIVE;
+      this.screenWidth = screenWidth;
+      this.screenHeight = screenHeight;
+      this.blockSize = screenWidth.floor() / 8;
+      TetrominoePosition active = TetrominoePosition(Tetrominoe.L, 0, 0);
+      tetrominoes.add(active);
+    }
   }
 
   GameEngine tick() {
@@ -40,15 +44,14 @@ class GameEngine {
 
   TetrominoePosition _generateNewTetrominoe() {
     Tetrominoe nextTetrominoe = _randomTetrominoe();
-    int horizontalMax =
-        Random().nextInt((_constraints.maxWidth / blockSize).floor()) -
-            _tetrominoeWidth(nextTetrominoe);
+    int horizontalMax = Random().nextInt((screenWidth / blockSize).floor()) -
+        _tetrominoeWidth(nextTetrominoe);
     int horizontal = max(0, horizontalMax);
     return TetrominoePosition(nextTetrominoe, 0, horizontal);
   }
 
   TetrominoePosition _advance(TetrominoePosition tetrominoePosition) {
-    int totalVerticalBlockCount = (_constraints.maxHeight / blockSize).floor();
+    int totalVerticalBlockCount = (screenHeight / blockSize).floor();
     int height = tetrominoeHeight(tetrominoePosition.tetrominoe);
     int maxBlockCount = totalVerticalBlockCount - height;
     if (tetrominoePosition.verticalOffsetCount >= maxBlockCount) {
@@ -88,3 +91,5 @@ class GameEngine {
     return 0;
   }
 }
+
+enum GameState { IDLE, ACTIVE, DONE }

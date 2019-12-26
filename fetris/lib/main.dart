@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: SafeArea(child: LayoutBuilder(builder: (context, constraints) {
-        return TetrisBoard(constraints);
+        return TetrisBoard();
       })),
     );
   }

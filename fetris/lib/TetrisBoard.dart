@@ -2,23 +2,20 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
-import 'ShapesPainter.dart';
 import 'GameEngine.dart';
+import 'ShapesPainter.dart';
 
 class TetrisBoard extends StatefulWidget {
-  final BoxConstraints _constraints;
-
-  TetrisBoard(this._constraints);
-
   @override
-  _TetrisBoardState createState() => _TetrisBoardState(_constraints);
+  _TetrisBoardState createState() => _TetrisBoardState();
 }
 
 class _TetrisBoardState extends State<TetrisBoard> {
   GameEngine _gameEngine;
 
-  _TetrisBoardState(BoxConstraints _constraints)
-      : _gameEngine = GameEngine(_constraints);
+  _TetrisBoardState() {
+    _gameEngine = GameEngine();
+  }
 
   @override
   void initState() {
@@ -32,8 +29,14 @@ class _TetrisBoardState extends State<TetrisBoard> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: ShapesPainter(_gameEngine.tetrominoes, _gameEngine.blockSize),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        _gameEngine.initialize(constraints.maxWidth, constraints.maxHeight);
+        return CustomPaint(
+          painter:
+              ShapesPainter(_gameEngine.tetrominoes, _gameEngine.blockSize),
+        );
+      },
     );
   }
 }
