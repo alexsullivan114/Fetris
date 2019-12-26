@@ -48,9 +48,9 @@ class GameEngine {
   }
 
   TetrominoePosition _advance(TetrominoePosition tetrominoePosition) {
-    double totalVerticalBlockCount = _constraints.maxHeight.ceil() / blockSize;
+    int totalVerticalBlockCount = (_constraints.maxHeight / blockSize).floor();
     int height = tetrominoeHeight(tetrominoePosition.tetrominoe);
-    int maxBlockCount = (totalVerticalBlockCount - height).floor();
+    int maxBlockCount = totalVerticalBlockCount - height;
     if (tetrominoePosition.verticalOffsetCount >= maxBlockCount) {
       return tetrominoePosition;
     } else {

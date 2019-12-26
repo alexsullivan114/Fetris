@@ -32,10 +32,11 @@ class ShapesPainter extends CustomPainter {
       ..color = Colors.yellow;
     paint.color = Colors.deepOrange;
 
-    for (int j = 0; (j * blockSize) + blockSize < screenSize.height; j++) {
+    int verticalCount = (screenSize.height / blockSize).floor();
+    for (int j = 0; j < verticalCount; j++) {
       for (int i = 0; i < blockSize; i++) {
         Rect box =
-        Rect.fromLTWH(blockSize * i, j * blockSize, blockSize, blockSize);
+            Rect.fromLTWH(blockSize * i, j * blockSize, blockSize, blockSize);
         canvas.drawRect(box, paint);
       }
     }
