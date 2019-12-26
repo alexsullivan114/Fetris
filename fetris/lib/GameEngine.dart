@@ -39,7 +39,12 @@ class GameEngine {
   }
 
   TetrominoePosition _generateNewTetrominoe() {
-    return TetrominoePosition(_randomTetrominoe(), 0, 0);
+    Tetrominoe nextTetrominoe = _randomTetrominoe();
+    int horizontalMax =
+        Random().nextInt((_constraints.maxWidth / blockSize).floor()) -
+            _tetrominoeWidth(nextTetrominoe);
+    int horizontal = max(0, horizontalMax);
+    return TetrominoePosition(nextTetrominoe, 0, horizontal);
   }
 
   TetrominoePosition _advance(TetrominoePosition tetrominoePosition) {
@@ -57,7 +62,29 @@ class GameEngine {
   }
 
   Tetrominoe _randomTetrominoe() {
-    int random = Random().nextInt(Tetrominoe.values.length - 1);
+    int random = Random().nextInt(Tetrominoe.values.length);
     return Tetrominoe.values[random];
+  }
+
+  int _tetrominoeWidth(Tetrominoe tetrominoe) {
+    switch (tetrominoe) {
+      case Tetrominoe.STRAIGHT:
+        return 1;
+        break;
+      case Tetrominoe.SQUARE:
+        return 2;
+        break;
+      case Tetrominoe.T:
+        return 3;
+        break;
+      case Tetrominoe.L:
+        return 2;
+        break;
+      case Tetrominoe.S:
+        return 3;
+        break;
+    }
+
+    return 0;
   }
 }
