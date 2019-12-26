@@ -21,28 +21,25 @@ class GameEngine {
   GameEngine tick() {
     TetrominoePosition active = tetrominoes[0];
     TetrominoePosition advancedActive = _advance(active);
-    if (tetrominoes.length > 1) {
-      for (TetrominoePosition existing in tetrominoes.sublist(1)) {
-        if (advancedActive.collidesWith(existing)) {
-          TetrominoePosition nextActive =
-              TetrominoePosition(_randomTetrominoe(), 0, 0);
-          tetrominoes.insert(0, nextActive);
-          return this;
-        }
-      }
-    } else {
-      tetrominoes[0] = advancedActive;
-      if (advancedActive == active) {
-        TetrominoePosition nextActive =
-            TetrominoePosition(Tetrominoe.SQUARE, 0, 0);
+    if (active == advancedActive) {
+      TetrominoePosition nextActive = _generateNewTetrominoe();
+      tetrominoes.insert(0, nextActive);
+      return this;
+    }
+    for (TetrominoePosition existing in tetrominoes.sublist(1)) {
+      if (advancedActive.collidesWith(existing)) {
+        TetrominoePosition nextActive = _generateNewTetrominoe();
         tetrominoes.insert(0, nextActive);
         return this;
       }
     }
-
     tetrominoes[0] = advancedActive;
 
     return this;
+  }
+
+  TetrominoePosition _generateNewTetrominoe() {
+    return TetrominoePosition(_randomTetrominoe(), 0, 0);
   }
 
   TetrominoePosition _advance(TetrominoePosition tetrominoePosition) {
