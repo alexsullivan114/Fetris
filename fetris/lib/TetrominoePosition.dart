@@ -93,14 +93,14 @@ class TetrominoePosition {
     int tetroX = horizontalOffsetCount;
     switch (tetrominoe) {
       case Tetrominoe.STRAIGHT:
-        return tetroX == x && tetroY >= y && tetroY <= y + 3;
+        return tetroX == x && tetroY <= y && tetroY + 3 >= y;
         break;
       case Tetrominoe.SQUARE:
         return (tetroX <= x && tetroX + 1 >= x) &&
             (tetroY <= y && tetroY + 1 >= y);
         break;
       case Tetrominoe.T:
-        return ((tetroX <= x && tetroX + 2 <= x) && tetroY == y) ||
+        return ((tetroX <= x && tetroX + 2 >= x) && tetroY == y) ||
             (y == tetroY + 1 && x == tetroX + 1);
         break;
       case Tetrominoe.L:

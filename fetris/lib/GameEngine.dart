@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/widgets.dart';
 
 import 'Tetrominoe.dart';
@@ -23,7 +25,7 @@ class GameEngine {
       for (TetrominoePosition existing in tetrominoes.sublist(1)) {
         if (advancedActive.collidesWith(existing)) {
           TetrominoePosition nextActive =
-              TetrominoePosition(Tetrominoe.SQUARE, 0, 0);
+              TetrominoePosition(_randomTetrominoe(), 0, 0);
           tetrominoes.insert(0, nextActive);
           return this;
         }
@@ -55,5 +57,10 @@ class GameEngine {
           tetrominoePosition.verticalOffsetCount + 1,
           tetrominoePosition.horizontalOffsetCount);
     }
+  }
+
+  Tetrominoe _randomTetrominoe() {
+    int random = Random().nextInt(Tetrominoe.values.length - 1);
+    return Tetrominoe.values[random];
   }
 }
