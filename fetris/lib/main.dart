@@ -12,9 +12,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: SafeArea(child: LayoutBuilder(builder: (context, constraints) {
-        return TetrisBoard();
-      })),
+      home: Scaffold(
+        body: SafeArea(child: LayoutBuilder(builder: (context, constraints) {
+          return TetrisBoard();
+        })),
+      ),
     );
   }
 }

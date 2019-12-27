@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fetris/GamePad.dart';
 import 'package:flutter/widgets.dart';
 
 import 'GameEngine.dart';
@@ -29,14 +30,36 @@ class _TetrisBoardState extends State<TetrisBoard> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        _gameEngine.initialize(constraints.maxWidth, constraints.maxHeight);
-        return CustomPaint(
-          painter:
-              ShapesPainter(_gameEngine.tetrominoes, _gameEngine.blockSize),
-        );
-      },
+    return Column(
+      verticalDirection: VerticalDirection.up,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        GamePad(() {
+          setState(() {
+            _gameEngine = _gameEngine.left();
+          });
+        }, () {
+          setState(() {
+            _gameEngine = _gameEngine.down();
+          });
+        }, () {
+          setState(() {
+            _gameEngine = _gameEngine.right();
+          });
+        }),
+        Expanded(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              _gameEngine.initialize(
+                  constraints.maxWidth, constraints.maxHeight);
+              return CustomPaint(
+                painter: ShapesPainter(
+                    _gameEngine.tetrominoes, _gameEngine.blockSize),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

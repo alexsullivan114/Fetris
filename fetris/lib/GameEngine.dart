@@ -29,15 +29,59 @@ class GameEngine {
       TetrominoePosition nextActive = _generateNewTetrominoe();
       tetrominoes.insert(0, nextActive);
       return this;
+    } else if (tetrominoePositionCollidesWithExisting(advancedActive)) {
+      TetrominoePosition nextActive = _generateNewTetrominoe();
+      tetrominoes.insert(0, nextActive);
+      return this;
+    } else {
+      tetrominoes[0] = advancedActive;
+      return this;
     }
+  }
+
+  bool tetrominoePositionCollidesWithExisting(
+      TetrominoePosition tetrominoePosition) {
     for (TetrominoePosition existing in tetrominoes.sublist(1)) {
-      if (advancedActive.collidesWith(existing)) {
-        TetrominoePosition nextActive = _generateNewTetrominoe();
-        tetrominoes.insert(0, nextActive);
-        return this;
+      if (tetrominoePosition.collidesWith(existing)) {
+        return true;
       }
     }
-    tetrominoes[0] = advancedActive;
+
+    return false;
+  }
+
+  GameEngine left() {
+    TetrominoePosition active = tetrominoes[0];
+    TetrominoePosition newActive = TetrominoePosition(active.tetrominoe,
+        active.verticalOffsetCount, active.horizontalOffsetCount - 1);
+    if (!tetrominoePositionCollidesWithExisting(newActive) &&
+        active.horizontalOffsetCount > 0) {
+      tetrominoes[0] = newActive;
+    }
+
+    return this;
+  }
+
+  GameEngine down() {
+    TetrominoePosition active = tetrominoes[0];
+    TetrominoePosition newActive = _advance(active);
+    if (!tetrominoePositionCollidesWithExisting(newActive)) {
+      tetrominoes[0] = newActive;
+    }
+
+    return this;
+  }
+
+  GameEngine right() {
+    int horizontalMax = (screenWidth / blockSize).floor();
+    TetrominoePosition active = tetrominoes[0];
+    TetrominoePosition newActive = TetrominoePosition(active.tetrominoe,
+        active.verticalOffsetCount, active.horizontalOffsetCount + 1);
+    if (!tetrominoePositionCollidesWithExisting(newActive) &&
+        active.horizontalOffsetCount + _tetrominoeWidth(active.tetrominoe) <
+            horizontalMax) {
+      tetrominoes[0] = newActive;
+    }
 
     return this;
   }

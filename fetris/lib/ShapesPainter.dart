@@ -29,8 +29,7 @@ class ShapesPainter extends CustomPainter {
     final paint = Paint()
       ..strokeWidth = 1
       ..style = PaintingStyle.stroke
-      ..color = Colors.yellow;
-    paint.color = Colors.deepOrange;
+      ..color = Colors.deepOrange;
 
     int verticalCount = (screenSize.height / blockSize).floor();
     for (int j = 0; j < verticalCount; j++) {
