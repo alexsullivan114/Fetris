@@ -9,7 +9,7 @@ class GameEngine {
   double blockSize;
   double screenWidth;
   double screenHeight;
-  GameState _gameState = GameState.IDLE;
+  GameState gameState = GameState.IDLE;
 
   List<TetrominoeBlock> _fallenBlocks = [];
   TetrominoePosition active;
@@ -21,8 +21,8 @@ class GameEngine {
   }
 
   void initialize(double screenWidth, double screenHeight) {
-    if (_gameState == GameState.IDLE) {
-      _gameState = GameState.ACTIVE;
+    if (gameState == GameState.IDLE) {
+      gameState = GameState.ACTIVE;
       this.screenWidth = screenWidth;
       this.screenHeight = screenHeight;
       this.blockSize = screenWidth.floor() / 8;
@@ -33,19 +33,26 @@ class GameEngine {
   GameEngine tick() {
     TetrominoePosition advancedActive = _advance(active);
     if (tetrominoePositionCollidesWithBottom(advancedActive)) {
-      _fallenBlocks.addAll(active.toTetrominoeBlocks());
       TetrominoePosition nextActive = _generateNewTetrominoe();
-      active = nextActive;
-      return this;
+      if (tetrominoePositionCollidesWithExisting(nextActive)) {
+        gameState = GameState.DONE;
+      } else {
+        _fallenBlocks.addAll(active.toTetrominoeBlocks());
+        active = nextActive;
+      }
     } else if (tetrominoePositionCollidesWithExisting(advancedActive)) {
-      _fallenBlocks.addAll(active.toTetrominoeBlocks());
       TetrominoePosition nextActive = _generateNewTetrominoe();
-      active = nextActive;
-      return this;
+      if (tetrominoePositionCollidesWithExisting(nextActive)) {
+        gameState = GameState.DONE;
+      } else {
+        _fallenBlocks.addAll(active.toTetrominoeBlocks());
+        active = nextActive;
+      }
     } else {
       active = advancedActive;
-      return this;
     }
+
+    return this;
   }
 
   bool tetrominoePositionCollidesWithExisting(
