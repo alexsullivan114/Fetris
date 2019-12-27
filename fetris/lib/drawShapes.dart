@@ -1,8 +1,19 @@
 import 'dart:ui';
 
+import 'package:fetris/TetrominoeBlock.dart';
 import 'package:flutter/material.dart';
 
 import 'Tetrominoe.dart';
+
+void drawTetrominoeBlock(TetrominoeBlock block, Canvas canvas,
+    double blockSize) {
+  final shapePainter = Paint()
+    ..color = block.color;
+  final position = block.position;
+  final shapeRect = Rect.fromLTWH(
+      position.x * blockSize, position.y * blockSize, blockSize, blockSize);
+  canvas.drawRect(shapeRect, shapePainter);
+}
 
 void drawTetrominoes(Tetrominoe tetrominoe, Canvas canvas, double blockSize,
     int verticalOffsetCount, int horizontalOffsetCount) {
@@ -28,15 +39,17 @@ void drawTetrominoes(Tetrominoe tetrominoe, Canvas canvas, double blockSize,
 
 void drawStraight(Canvas canvas, double blockSize, int verticalOffset,
     int horizontalOffset) {
-  final shapePainter = Paint()..color = Colors.cyanAccent;
-  final shapeRect = Rect.fromLTWH(horizontalOffset * blockSize,
-      verticalOffset * blockSize, blockSize, blockSize * 4);
+  final shapePainter = Paint()
+    ..color = tetrominoeColor(Tetrominoe.STRAIGHT);
+        final shapeRect = Rect.fromLTWH(horizontalOffset * blockSize,
+        verticalOffset * blockSize, blockSize, blockSize * 4);
   canvas.drawRect(shapeRect, shapePainter);
 }
 
 void drawSquare(Canvas canvas, double blockSize, int verticalOffset,
     int horizontalOffset) {
-  final shapePainter = Paint()..color = Colors.yellow;
+  final shapePainter = Paint()
+    ..color = tetrominoeColor(Tetrominoe.SQUARE);
   final shapeRect = Rect.fromLTWH(horizontalOffset * blockSize,
       verticalOffset * blockSize, blockSize * 2, blockSize * 2);
   canvas.drawRect(shapeRect, shapePainter);
@@ -44,7 +57,8 @@ void drawSquare(Canvas canvas, double blockSize, int verticalOffset,
 
 void drawT(Canvas canvas, double blockSize, int verticalOffset,
     int horizontalOffset) {
-  final shapePainter = Paint()..color = Colors.red;
+  final shapePainter = Paint()
+    ..color = tetrominoeColor(Tetrominoe.T);
   final topRect = Rect.fromLTWH(horizontalOffset * blockSize,
       verticalOffset * blockSize, blockSize * 3, blockSize * 1);
   canvas.drawRect(topRect, shapePainter);
@@ -55,7 +69,8 @@ void drawT(Canvas canvas, double blockSize, int verticalOffset,
 
 void drawL(Canvas canvas, double blockSize, int verticalOffset,
     int horizontalOffset) {
-  final shapePainter = Paint()..color = Colors.green;
+  final shapePainter = Paint()
+    ..color = tetrominoeColor(Tetrominoe.L);
   final lineRect = Rect.fromLTWH(horizontalOffset * blockSize,
       verticalOffset * blockSize, blockSize, blockSize * 3);
   canvas.drawRect(lineRect, shapePainter);
@@ -66,7 +81,8 @@ void drawL(Canvas canvas, double blockSize, int verticalOffset,
 
 void drawS(Canvas canvas, double blockSize, int verticalOffset,
     int horizontalOffset) {
-  final shapePainter = Paint()..color = Colors.blue;
+  final shapePainter = Paint()
+    ..color = tetrominoeColor(Tetrominoe.S);
   final topRect = Rect.fromLTWH(horizontalOffset * blockSize,
       verticalOffset * blockSize, blockSize, blockSize * 2);
   canvas.drawRect(topRect, shapePainter);

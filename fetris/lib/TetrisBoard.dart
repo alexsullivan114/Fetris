@@ -53,8 +53,8 @@ class _TetrisBoardState extends State<TetrisBoard> {
               _gameEngine.initialize(
                   constraints.maxWidth, constraints.maxHeight);
               return CustomPaint(
-                painter: ShapesPainter(
-                    _gameEngine.tetrominoes, _gameEngine.blockSize),
+                painter:
+                    ShapesPainter(_gameEngine.blocks, _gameEngine.blockSize),
               );
             },
           ),

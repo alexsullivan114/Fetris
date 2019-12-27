@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:fetris/TetrominoeBlock.dart';
+
 import 'Tetrominoe.dart';
 import 'TetrominoePosition.dart';
 
@@ -9,7 +11,14 @@ class GameEngine {
   double screenHeight;
   GameState _gameState = GameState.IDLE;
 
-  List<TetrominoePosition> tetrominoes = [];
+  List<TetrominoeBlock> _fallenBlocks = [];
+  TetrominoePosition active;
+
+  List<TetrominoeBlock> get blocks {
+    final List<TetrominoeBlock> blocks = List.from(_fallenBlocks);
+    blocks.addAll(active.toTetrominoeBlocks());
+    return blocks;
+  }
 
   void initialize(double screenWidth, double screenHeight) {
     if (_gameState == GameState.IDLE) {
@@ -17,32 +26,32 @@ class GameEngine {
       this.screenWidth = screenWidth;
       this.screenHeight = screenHeight;
       this.blockSize = screenWidth.floor() / 8;
-      TetrominoePosition active = TetrominoePosition(Tetrominoe.L, 0, 0);
-      tetrominoes.add(active);
+      active = TetrominoePosition(Tetrominoe.L, 0, 0);
     }
   }
 
   GameEngine tick() {
-    TetrominoePosition active = tetrominoes[0];
     TetrominoePosition advancedActive = _advance(active);
     if (active == advancedActive) {
+      _fallenBlocks.addAll(active.toTetrominoeBlocks());
       TetrominoePosition nextActive = _generateNewTetrominoe();
-      tetrominoes.insert(0, nextActive);
+      active = nextActive;
       return this;
     } else if (tetrominoePositionCollidesWithExisting(advancedActive)) {
+      _fallenBlocks.addAll(active.toTetrominoeBlocks());
       TetrominoePosition nextActive = _generateNewTetrominoe();
-      tetrominoes.insert(0, nextActive);
+      active = nextActive;
       return this;
     } else {
-      tetrominoes[0] = advancedActive;
+      active = advancedActive;
       return this;
     }
   }
 
   bool tetrominoePositionCollidesWithExisting(
       TetrominoePosition tetrominoePosition) {
-    for (TetrominoePosition existing in tetrominoes.sublist(1)) {
-      if (tetrominoePosition.collidesWith(existing)) {
+    for (TetrominoeBlock existing in _fallenBlocks) {
+      if (tetrominoePosition.collidesWith(existing.position)) {
         return true;
       }
     }
@@ -51,22 +60,20 @@ class GameEngine {
   }
 
   GameEngine left() {
-    TetrominoePosition active = tetrominoes[0];
     TetrominoePosition newActive = TetrominoePosition(active.tetrominoe,
         active.verticalOffsetCount, active.horizontalOffsetCount - 1);
     if (!tetrominoePositionCollidesWithExisting(newActive) &&
         active.horizontalOffsetCount > 0) {
-      tetrominoes[0] = newActive;
+      active = newActive;
     }
 
     return this;
   }
 
   GameEngine down() {
-    TetrominoePosition active = tetrominoes[0];
     TetrominoePosition newActive = _advance(active);
     if (!tetrominoePositionCollidesWithExisting(newActive)) {
-      tetrominoes[0] = newActive;
+      active = newActive;
     }
 
     return this;
@@ -74,13 +81,12 @@ class GameEngine {
 
   GameEngine right() {
     int horizontalMax = (screenWidth / blockSize).floor();
-    TetrominoePosition active = tetrominoes[0];
     TetrominoePosition newActive = TetrominoePosition(active.tetrominoe,
         active.verticalOffsetCount, active.horizontalOffsetCount + 1);
     if (!tetrominoePositionCollidesWithExisting(newActive) &&
         active.horizontalOffsetCount + _tetrominoeWidth(active.tetrominoe) <
             horizontalMax) {
-      tetrominoes[0] = newActive;
+      active = newActive;
     }
 
     return this;

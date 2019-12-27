@@ -1,3 +1,5 @@
+import 'package:fetris/TetrominoeBlock.dart';
+
 import 'Tetrominoe.dart';
 
 class TetrominoePosition {
@@ -8,15 +10,8 @@ class TetrominoePosition {
   TetrominoePosition(
       this.tetrominoe, this.verticalOffsetCount, this.horizontalOffsetCount);
 
-  bool collidesWith(TetrominoePosition other) {
-    List<Position> otherCoordinates = other.coordinates();
-    for (Position position in otherCoordinates) {
-      if (_containsPoint(position.x, position.y)) {
-        return true;
-      }
-    }
-
-    return false;
+  bool collidesWith(Position otherCoordinate) {
+    return _containsPoint(otherCoordinate.x, otherCoordinate.y);
   }
 
   List<Position> coordinates() {
@@ -114,6 +109,12 @@ class TetrominoePosition {
     }
 
     return false;
+  }
+
+  List<TetrominoeBlock> toTetrominoeBlocks() {
+    return coordinates().map((position) {
+      return TetrominoeBlock(tetrominoeColor(tetrominoe), position);
+    }).toList();
   }
 
   @override

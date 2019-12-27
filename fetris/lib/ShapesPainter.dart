@@ -1,23 +1,18 @@
+import 'package:fetris/TetrominoeBlock.dart';
 import 'package:flutter/material.dart';
 
-import 'TetrominoePosition.dart';
 import 'drawShapes.dart';
 
 class ShapesPainter extends CustomPainter {
-  final List<TetrominoePosition> _tetrominoes;
+  final List<TetrominoeBlock> _blocks;
   final double _blockSize;
 
-  ShapesPainter(this._tetrominoes, this._blockSize);
+  ShapesPainter(this._blocks, this._blockSize);
 
   @override
   void paint(Canvas canvas, Size size) {
-    _tetrominoes.forEach((tetrominoePosition) {
-      drawTetrominoes(
-          tetrominoePosition.tetrominoe,
-          canvas,
-          _blockSize,
-          tetrominoePosition.verticalOffsetCount,
-          tetrominoePosition.horizontalOffsetCount);
+    _blocks.forEach((tetrominoeBlock) {
+      drawTetrominoeBlock(tetrominoeBlock, canvas, _blockSize);
     });
     drawGrid(canvas, _blockSize, size);
   }
