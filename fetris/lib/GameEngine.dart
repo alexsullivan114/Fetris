@@ -32,7 +32,7 @@ class GameEngine {
 
   GameEngine tick() {
     TetrominoePosition advancedActive = _advance(active);
-    if (active == advancedActive) {
+    if (tetrominoePositionCollidesWithBottom(advancedActive)) {
       _fallenBlocks.addAll(active.toTetrominoeBlocks());
       TetrominoePosition nextActive = _generateNewTetrominoe();
       active = nextActive;
@@ -59,6 +59,14 @@ class GameEngine {
     return false;
   }
 
+  bool tetrominoePositionCollidesWithBottom(
+      TetrominoePosition tetrominoePosition) {
+    int totalVerticalBlockCount = (screenHeight / blockSize).floor();
+    int height = tetrominoeHeight(tetrominoePosition.tetrominoe);
+    int maxBlockCount = totalVerticalBlockCount - height;
+    return tetrominoePosition.verticalOffsetCount > maxBlockCount;
+  }
+
   GameEngine left() {
     TetrominoePosition newActive = TetrominoePosition(active.tetrominoe,
         active.verticalOffsetCount, active.horizontalOffsetCount - 1);
@@ -72,7 +80,8 @@ class GameEngine {
 
   GameEngine down() {
     TetrominoePosition newActive = _advance(active);
-    if (!tetrominoePositionCollidesWithExisting(newActive)) {
+    if (!tetrominoePositionCollidesWithExisting(newActive) &&
+        !tetrominoePositionCollidesWithBottom(newActive)) {
       active = newActive;
     }
 
@@ -101,17 +110,10 @@ class GameEngine {
   }
 
   TetrominoePosition _advance(TetrominoePosition tetrominoePosition) {
-    int totalVerticalBlockCount = (screenHeight / blockSize).floor();
-    int height = tetrominoeHeight(tetrominoePosition.tetrominoe);
-    int maxBlockCount = totalVerticalBlockCount - height;
-    if (tetrominoePosition.verticalOffsetCount >= maxBlockCount) {
-      return tetrominoePosition;
-    } else {
-      return TetrominoePosition(
-          tetrominoePosition.tetrominoe,
-          tetrominoePosition.verticalOffsetCount + 1,
-          tetrominoePosition.horizontalOffsetCount);
-    }
+    return TetrominoePosition(
+        tetrominoePosition.tetrominoe,
+        tetrominoePosition.verticalOffsetCount + 1,
+        tetrominoePosition.horizontalOffsetCount);
   }
 
   Tetrominoe _randomTetrominoe() {
