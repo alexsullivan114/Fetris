@@ -1,136 +1,64 @@
 import 'package:fetris/TetrominoeBlock.dart';
+import 'package:fetris/shapeMath.dart';
 
 import 'Tetrominoe.dart';
 
 class TetrominoePosition {
   final Tetrominoe tetrominoe;
-  final int verticalOffsetCount;
-  final int horizontalOffsetCount;
+  final List<Position> coordinates;
   final Rotation rotation;
 
-  TetrominoePosition(this.tetrominoe, this.verticalOffsetCount,
-      this.horizontalOffsetCount, this.rotation);
+  TetrominoePosition(this.tetrominoe, this.coordinates, this.rotation);
 
   bool collidesWith(Position otherCoordinate) {
     return _containsPoint(otherCoordinate.x, otherCoordinate.y);
   }
 
-  // Need to updates coordinates to include "spin" or rotation. Hopefully there's
-  // some nice math formula I can use?
-  List<Position> coordinates() {
-    List<Position> positions = [];
-    switch (tetrominoe) {
-      case Tetrominoe.STRAIGHT:
-        return straightCoordinates();
-        break;
-      case Tetrominoe.SQUARE:
-        Position topLeft = Position(horizontalOffsetCount, verticalOffsetCount);
-        Position topRight =
-            Position(horizontalOffsetCount + 1, verticalOffsetCount);
-        Position bottomLeft =
-            Position(horizontalOffsetCount, verticalOffsetCount + 1);
-        Position bottomRight =
-            Position(horizontalOffsetCount + 1, verticalOffsetCount + 1);
-        positions.add(topLeft);
-        positions.add(topRight);
-        positions.add(bottomLeft);
-        positions.add(bottomRight);
-        break;
-      case Tetrominoe.T:
-        Position topLeft = Position(horizontalOffsetCount, verticalOffsetCount);
-        Position topMiddle =
-            Position(horizontalOffsetCount + 1, verticalOffsetCount);
-        Position topRight =
-            Position(horizontalOffsetCount + 2, verticalOffsetCount);
-        Position bottomMiddle =
-            Position(horizontalOffsetCount + 1, verticalOffsetCount + 1);
-        positions.add(topLeft);
-        positions.add(topMiddle);
-        positions.add(topRight);
-        positions.add(bottomMiddle);
-        break;
-      case Tetrominoe.L:
-        Position topLeft = Position(horizontalOffsetCount, verticalOffsetCount);
-        Position middleLeft =
-            Position(horizontalOffsetCount, verticalOffsetCount + 1);
-        Position bottomLeft =
-            Position(horizontalOffsetCount, verticalOffsetCount + 2);
-        Position bottomRight =
-            Position(horizontalOffsetCount + 1, verticalOffsetCount + 2);
-        positions.add(topLeft);
-        positions.add(middleLeft);
-        positions.add(bottomLeft);
-        positions.add(bottomRight);
-        break;
-      case Tetrominoe.S:
-        Position topLeft = Position(horizontalOffsetCount, verticalOffsetCount);
-        Position bottomLeft =
-            Position(horizontalOffsetCount, verticalOffsetCount + 1);
-        Position topRight =
-            Position(horizontalOffsetCount + 1, verticalOffsetCount + 1);
-        Position bottomRight =
-            Position(horizontalOffsetCount + 1, verticalOffsetCount + 2);
-
-        positions.add(topRight);
-        positions.add(bottomRight);
-        positions.add(topLeft);
-        positions.add(bottomLeft);
-        break;
-    }
-
-    return positions;
+  factory TetrominoePosition.fromOffset(Tetrominoe tetrominoe,
+      int verticalOffsetCount, int horizontalOffset, Rotation rotation) {
+    return TetrominoePosition(
+        tetrominoe,
+        tetronimoeCoordinates(
+            verticalOffsetCount, horizontalOffset, tetrominoe, rotation),
+        rotation);
   }
 
-  List<Position> straightCoordinates() {
-    List<Position> positions = [];
-    if (rotation == Rotation.NINETY) {
-      for (int i = 0; i < tetrominoeHeight(tetrominoe); i++) {
-        final position =
-            Position(horizontalOffsetCount + i, verticalOffsetCount);
-        positions.add(position);
-      }
-    } else {
-      for (int i = verticalOffsetCount;
-          i < verticalOffsetCount + tetrominoeHeight(tetrominoe);
-          i++) {
-        Position position = Position(horizontalOffsetCount, i);
-        positions.add(position);
-      }
-    }
+  factory TetrominoePosition.left(TetrominoePosition old) {
+    List<Position> newCoordinates = old.coordinates.map((position) {
+      return Position(position.x - 1, position.y);
+    }).toList();
 
-    return positions;
+    return TetrominoePosition(old.tetrominoe, newCoordinates, old.rotation);
+  }
+
+  factory TetrominoePosition.right(TetrominoePosition old) {
+    List<Position> newCoordinates = old.coordinates.map((position) {
+      return Position(position.x + 1, position.y);
+    }).toList();
+
+    return TetrominoePosition(old.tetrominoe, newCoordinates, old.rotation);
+  }
+
+  factory TetrominoePosition.down(TetrominoePosition old) {
+    List<Position> newCoordinates = old.coordinates.map((position) {
+      return Position(position.x, position.y + 1);
+    }).toList();
+
+    return TetrominoePosition(old.tetrominoe, newCoordinates, old.rotation);
   }
 
   bool _containsPoint(int x, int y) {
-    int tetroY = verticalOffsetCount;
-    int tetroX = horizontalOffsetCount;
-    switch (tetrominoe) {
-      case Tetrominoe.STRAIGHT:
-        return tetroX == x && tetroY <= y && tetroY + 3 >= y;
-        break;
-      case Tetrominoe.SQUARE:
-        return (tetroX <= x && tetroX + 1 >= x) &&
-            (tetroY <= y && tetroY + 1 >= y);
-        break;
-      case Tetrominoe.T:
-        return ((tetroX <= x && tetroX + 2 >= x) && tetroY == y) ||
-            (y == tetroY + 1 && x == tetroX + 1);
-        break;
-      case Tetrominoe.L:
-        return (tetroX == x && tetroY <= y && tetroY + 2 >= y) ||
-            (y == tetroY + 2 && x == tetroX + 1);
-        break;
-      case Tetrominoe.S:
-        return (tetroX == x && tetroX <= y && tetroY + 1 >= y) ||
-            (tetroY + 1 <= y && tetroY + 2 >= y && tetroX + 1 == x);
-        break;
+    for (final value in coordinates) {
+      if (value.x == x && value.y == y) {
+        return true;
+      }
     }
 
     return false;
   }
 
   List<TetrominoeBlock> blocks() {
-    return coordinates().map((position) {
+    return coordinates.map((position) {
       return TetrominoeBlock(tetrominoeColor(tetrominoe), position);
     }).toList();
   }
@@ -163,13 +91,15 @@ class TetrominoePosition {
       newRotation = nextRotation(rotation);
     }
 
-    return TetrominoePosition(
-        tetrominoe, verticalOffsetCount, horizontalOffsetCount, newRotation);
+
+//
+//    return TetrominoePosition(
+//        tetrominoe, verticalOffsetCount, horizontalOffsetCount, newRotation);
   }
 
   @override
   String toString() {
-    return 'TetrominoePosition{tetrominoe: $tetrominoe, verticalOffsetCount: $verticalOffsetCount, horizontalOffsetCount: $horizontalOffsetCount}';
+    return 'TetrominoePosition{tetrominoe: $tetrominoe, coordinates: $coordinates, rotation: $rotation}';
   }
 }
 

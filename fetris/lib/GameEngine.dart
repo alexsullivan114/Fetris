@@ -34,12 +34,12 @@ class GameEngine {
       this.screenWidth = screenWidth;
       this.screenHeight = screenHeight;
       this.blockSize = screenWidth.floor() / 8;
-      active = TetrominoePosition(Tetrominoe.STRAIGHT, 0, 0, Rotation.ZERO);
+      active = TetrominoePosition.fromOffset(Tetrominoe.T, 0, 0, Rotation.ZERO);
     }
   }
 
   GameEngine tick() {
-    TetrominoePosition advancedActive = _advance(active);
+    TetrominoePosition advancedActive = TetrominoePosition.down(active);
     if (tetrominoePositionCollidesWithBottom(advancedActive)) {
       TetrominoePosition nextActive = _generateNewTetrominoe();
       if (tetrominoePositionCollidesWithExisting(nextActive)) {
@@ -107,13 +107,13 @@ class GameEngine {
 
   bool tetrominoePositionCollidesWithBottom(
       TetrominoePosition tetrominoePosition) {
-    int height = tetrominoePosition.height();
-    int maxBlockCount = maxVerticalBlockCount - height;
-    return tetrominoePosition.verticalOffsetCount > maxBlockCount;
+    return tetrominoePosition.coordinates.any((position) {
+      return position.y > maxVerticalBlockCount - 1;
+    });
   }
 
   bool tetrominoePositionOutsideBounds(TetrominoePosition tetrominoePosition) {
-    final coordinates = tetrominoePosition.coordinates();
+    final coordinates = tetrominoePosition.coordinates;
     for (final coordinate in coordinates) {
       if (coordinate.y < 0 ||
           coordinate.y > maxVerticalBlockCount - 1 ||
@@ -127,11 +127,7 @@ class GameEngine {
   }
 
   GameEngine left() {
-    TetrominoePosition newActive = TetrominoePosition(
-        active.tetrominoe,
-        active.verticalOffsetCount,
-        active.horizontalOffsetCount - 1,
-        active.rotation);
+    TetrominoePosition newActive = TetrominoePosition.left(active);
     if (!tetrominoePositionCollidesWithExisting(newActive) &&
         !tetrominoePositionOutsideBounds(newActive)) {
       active = newActive;
@@ -141,7 +137,7 @@ class GameEngine {
   }
 
   GameEngine down() {
-    TetrominoePosition newActive = _advance(active);
+    TetrominoePosition newActive = TetrominoePosition.down(active);
     if (!tetrominoePositionCollidesWithExisting(newActive) &&
         !tetrominoePositionCollidesWithBottom(newActive)) {
       active = newActive;
@@ -151,18 +147,10 @@ class GameEngine {
   }
 
   GameEngine right() {
-    TetrominoePosition newActive = TetrominoePosition(
-        active.tetrominoe,
-        active.verticalOffsetCount,
-        active.horizontalOffsetCount + 1,
-        active.rotation);
+    TetrominoePosition newActive = TetrominoePosition.right(active);
     if (!tetrominoePositionCollidesWithExisting(newActive) &&
         !tetrominoePositionOutsideBounds(newActive)) {
       active = newActive;
-    } else {
-      print("Can't move right. New active: " + newActive.toString());
-      print("New active coordinates: " + newActive.coordinates().toString());
-      print("Max horizontal: " + maxHorizontalBlockCount.toString());
     }
 
     return this;
@@ -183,15 +171,8 @@ class GameEngine {
     int horizontalMax = Random().nextInt(maxHorizontalBlockCount) -
         tetrominoeWidth(nextTetrominoe);
     int horizontal = max(0, horizontalMax);
-    return TetrominoePosition(nextTetrominoe, 0, horizontal, Rotation.ZERO);
-  }
-
-  TetrominoePosition _advance(TetrominoePosition tetrominoePosition) {
-    return TetrominoePosition(
-        tetrominoePosition.tetrominoe,
-        tetrominoePosition.verticalOffsetCount + 1,
-        tetrominoePosition.horizontalOffsetCount,
-        tetrominoePosition.rotation);
+    return TetrominoePosition.fromOffset(
+        nextTetrominoe, 0, horizontal, Rotation.ZERO);
   }
 
   Tetrominoe _randomTetrominoe() {
