@@ -24,6 +24,28 @@ int tetrominoeHeight(Tetrominoe tetrominoe) {
   return 0;
 }
 
+int tetrominoeWidth(Tetrominoe tetrominoe) {
+  switch (tetrominoe) {
+    case Tetrominoe.STRAIGHT:
+      return 1;
+      break;
+    case Tetrominoe.SQUARE:
+      return 2;
+      break;
+    case Tetrominoe.T:
+      return 3;
+      break;
+    case Tetrominoe.L:
+      return 2;
+      break;
+    case Tetrominoe.S:
+      return 2;
+      break;
+  }
+
+  return 0;
+}
+
 ColorSwatch<int> tetrominoeColor(Tetrominoe tetrominoe) {
   switch (tetrominoe) {
     case Tetrominoe.STRAIGHT:

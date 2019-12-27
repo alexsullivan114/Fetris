@@ -20,6 +20,10 @@ class GameEngine {
     return blocks;
   }
 
+  int get maxHorizontalBlockCount {
+    return (screenWidth / blockSize).floor();
+  }
+
   void initialize(double screenWidth, double screenHeight) {
     if (gameState == GameState.IDLE) {
       gameState = GameState.ACTIVE;
@@ -52,7 +56,38 @@ class GameEngine {
       active = advancedActive;
     }
 
+    _fallenBlocks = _clearCompleteLines();
     return this;
+  }
+
+  List<TetrominoeBlock> _clearCompleteLines() {
+    final blockCountMap = Map<int, int>();
+    _fallenBlocks.forEach((block) {
+      int y = block.position.y;
+      int existingCount = blockCountMap.containsKey(y) ? blockCountMap[y] : 0;
+      blockCountMap[block.position.y] = existingCount + 1;
+    });
+
+    var returnList = List<TetrominoeBlock>.from(_fallenBlocks);
+
+    blockCountMap.forEach((verticalPosition, count) {
+      if (count >= maxHorizontalBlockCount) {
+        returnList.removeWhere((block) {
+          return block.position.y == verticalPosition;
+        });
+        returnList = returnList.map((block) {
+          Position blockPosition = block.position;
+          if (blockPosition.y < verticalPosition) {
+            return TetrominoeBlock(
+                block.color, Position(blockPosition.x, blockPosition.y + 1));
+          } else {
+            return block;
+          }
+        }).toList();
+      }
+    });
+
+    return returnList;
   }
 
   bool tetrominoePositionCollidesWithExisting(
@@ -96,12 +131,11 @@ class GameEngine {
   }
 
   GameEngine right() {
-    int horizontalMax = (screenWidth / blockSize).floor();
     TetrominoePosition newActive = TetrominoePosition(active.tetrominoe,
         active.verticalOffsetCount, active.horizontalOffsetCount + 1);
     if (!tetrominoePositionCollidesWithExisting(newActive) &&
-        active.horizontalOffsetCount + _tetrominoeWidth(active.tetrominoe) <
-            horizontalMax) {
+        active.horizontalOffsetCount + tetrominoeWidth(active.tetrominoe) <
+            maxHorizontalBlockCount) {
       active = newActive;
     }
 
@@ -110,8 +144,8 @@ class GameEngine {
 
   TetrominoePosition _generateNewTetrominoe() {
     Tetrominoe nextTetrominoe = _randomTetrominoe();
-    int horizontalMax = Random().nextInt((screenWidth / blockSize).floor()) -
-        _tetrominoeWidth(nextTetrominoe);
+    int horizontalMax = Random().nextInt(maxHorizontalBlockCount) -
+        tetrominoeWidth(nextTetrominoe);
     int horizontal = max(0, horizontalMax);
     return TetrominoePosition(nextTetrominoe, 0, horizontal);
   }
@@ -126,28 +160,6 @@ class GameEngine {
   Tetrominoe _randomTetrominoe() {
     int random = Random().nextInt(Tetrominoe.values.length);
     return Tetrominoe.values[random];
-  }
-
-  int _tetrominoeWidth(Tetrominoe tetrominoe) {
-    switch (tetrominoe) {
-      case Tetrominoe.STRAIGHT:
-        return 1;
-        break;
-      case Tetrominoe.SQUARE:
-        return 2;
-        break;
-      case Tetrominoe.T:
-        return 3;
-        break;
-      case Tetrominoe.L:
-        return 2;
-        break;
-      case Tetrominoe.S:
-        return 3;
-        break;
-    }
-
-    return 0;
   }
 }
 
