@@ -21,7 +21,7 @@ class _TetrisBoardState extends State<TetrisBoard> {
   @override
   void initState() {
     super.initState();
-    Timer.periodic(new Duration(milliseconds: 500), (Timer timer) {
+    Timer.periodic(new Duration(milliseconds: 2000), (Timer timer) {
       setState(() {
         _gameEngine = _gameEngine.tick();
       });
@@ -31,7 +31,9 @@ class _TetrisBoardState extends State<TetrisBoard> {
   @override
   Widget build(BuildContext context) {
     if (_gameEngine.gameState == GameState.DONE) {
-      return Center(child: Text("YOU LOSE", style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold)));
+      return Center(
+          child: Text("YOU LOSE",
+              style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold)));
     } else {
       return Column(
         verticalDirection: VerticalDirection.up,
@@ -48,6 +50,10 @@ class _TetrisBoardState extends State<TetrisBoard> {
           }, () {
             setState(() {
               _gameEngine = _gameEngine.right();
+            });
+          }, () {
+            setState(() {
+              _gameEngine = _gameEngine.rotate();
             });
           }),
           Expanded(
