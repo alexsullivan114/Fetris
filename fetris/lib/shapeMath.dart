@@ -6,8 +6,12 @@ List<Position> tetronimoeCoordinates(int verticalOffsetCount,
   List<Position> positions = [];
   switch (tetrominoe) {
     case Tetrominoe.STRAIGHT:
-      return straightCoordinates(
-          rotation, horizontalOffsetCount, verticalOffsetCount, tetrominoe);
+      for (int i = verticalOffsetCount;
+          i < verticalOffsetCount + tetrominoeHeight(tetrominoe);
+          i++) {
+        Position position = Position(horizontalOffsetCount, i);
+        positions.add(position);
+      }
       break;
     case Tetrominoe.SQUARE:
       Position topLeft = Position(horizontalOffsetCount, verticalOffsetCount);
@@ -62,26 +66,6 @@ List<Position> tetronimoeCoordinates(int verticalOffsetCount,
       positions.add(topLeft);
       positions.add(bottomLeft);
       break;
-  }
-
-  return positions;
-}
-
-List<Position> straightCoordinates(Rotation rotation, int horizontalOffsetCount,
-    int verticalOffsetCount, Tetrominoe tetrominoe) {
-  List<Position> positions = [];
-  if (rotation == Rotation.NINETY) {
-    for (int i = 0; i < tetrominoeHeight(tetrominoe); i++) {
-      final position = Position(horizontalOffsetCount + i, verticalOffsetCount);
-      positions.add(position);
-    }
-  } else {
-    for (int i = verticalOffsetCount;
-        i < verticalOffsetCount + tetrominoeHeight(tetrominoe);
-        i++) {
-      Position position = Position(horizontalOffsetCount, i);
-      positions.add(position);
-    }
   }
 
   return positions;

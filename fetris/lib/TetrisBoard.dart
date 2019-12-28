@@ -21,7 +21,7 @@ class _TetrisBoardState extends State<TetrisBoard> {
   @override
   void initState() {
     super.initState();
-    Timer.periodic(new Duration(seconds: 2), (Timer timer) {
+    Timer.periodic(new Duration(seconds: 1), (Timer timer) {
       setState(() {
         _gameEngine = _gameEngine.tick();
       });

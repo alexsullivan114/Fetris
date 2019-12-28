@@ -34,7 +34,8 @@ class GameEngine {
       this.screenWidth = screenWidth;
       this.screenHeight = screenHeight;
       this.blockSize = screenWidth.floor() / 8;
-      active = TetrominoePosition.fromOffset(Tetrominoe.L, 0, 0, Rotation.ZERO);
+      active = TetrominoePosition.fromOffset(
+          Tetrominoe.STRAIGHT, 0, 0, Rotation.ZERO);
     }
   }
 
@@ -60,13 +61,13 @@ class GameEngine {
       active = advancedActive;
     }
 
-    _fallenBlocks = _clearCompleteLines();
+    _fallenBlocks = _clearCompleteLines(_fallenBlocks);
     return this;
   }
 
-  List<TetrominoeBlock> _clearCompleteLines() {
+  List<TetrominoeBlock> _clearCompleteLines(List<TetrominoeBlock> blocks) {
     final blockCountMap = Map<int, int>();
-    _fallenBlocks.forEach((block) {
+    blocks.forEach((block) {
       int y = block.position.y;
       int existingCount = blockCountMap.containsKey(y) ? blockCountMap[y] : 0;
       blockCountMap[block.position.y] = existingCount + 1;
