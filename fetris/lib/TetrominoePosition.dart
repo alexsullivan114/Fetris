@@ -7,44 +7,70 @@ class TetrominoePosition {
   final Tetrominoe tetrominoe;
   final List<Position> coordinates;
   final Rotation rotation;
+  final Position pivot;
 
-  TetrominoePosition(this.tetrominoe, this.coordinates, this.rotation);
-
-  bool collidesWith(Position otherCoordinate) {
-    return _containsPoint(otherCoordinate.x, otherCoordinate.y);
-  }
+  TetrominoePosition(
+      this.tetrominoe, this.coordinates, this.rotation, this.pivot);
 
   factory TetrominoePosition.fromOffset(Tetrominoe tetrominoe,
-      int verticalOffsetCount, int horizontalOffset, Rotation rotation) {
+      int verticalOffset, int horizontalOffset, Rotation rotation) {
     return TetrominoePosition(
         tetrominoe,
         tetronimoeCoordinates(
-            verticalOffsetCount, horizontalOffset, tetrominoe, rotation),
-        rotation);
+            verticalOffset, horizontalOffset, tetrominoe, rotation),
+        rotation,
+        calculatePivot(tetrominoe, verticalOffset, horizontalOffset));
   }
 
   factory TetrominoePosition.left(TetrominoePosition old) {
     List<Position> newCoordinates = old.coordinates.map((position) {
       return Position(position.x - 1, position.y);
     }).toList();
+    Position newPivot = Position(old.pivot.x - 1, old.pivot.y);
 
-    return TetrominoePosition(old.tetrominoe, newCoordinates, old.rotation);
+    return TetrominoePosition(
+        old.tetrominoe, newCoordinates, old.rotation, newPivot);
   }
 
   factory TetrominoePosition.right(TetrominoePosition old) {
     List<Position> newCoordinates = old.coordinates.map((position) {
       return Position(position.x + 1, position.y);
     }).toList();
+    Position newPivot = Position(old.pivot.x + 1, old.pivot.y);
 
-    return TetrominoePosition(old.tetrominoe, newCoordinates, old.rotation);
+    return TetrominoePosition(
+        old.tetrominoe, newCoordinates, old.rotation, newPivot);
   }
 
   factory TetrominoePosition.down(TetrominoePosition old) {
     List<Position> newCoordinates = old.coordinates.map((position) {
       return Position(position.x, position.y + 1);
     }).toList();
+    Position newPivot = Position(old.pivot.x, old.pivot.y + 1);
 
-    return TetrominoePosition(old.tetrominoe, newCoordinates, old.rotation);
+    return TetrominoePosition(
+        old.tetrominoe, newCoordinates, old.rotation, newPivot);
+  }
+
+  factory TetrominoePosition.rotated(TetrominoePosition old) {
+    Rotation newRotation = old.rotation;
+    if (old.tetrominoe == Tetrominoe.STRAIGHT) {
+      if (old.rotation == Rotation.NINETY) {
+        newRotation = Rotation.ZERO;
+      } else {
+        newRotation = Rotation.NINETY;
+      }
+    } else {
+      newRotation = nextRotation(old.rotation);
+    }
+
+    final newCoordinates = rotateCoordinates(old.coordinates, old.pivot);
+    return TetrominoePosition(
+        old.tetrominoe, newCoordinates, newRotation, old.pivot);
+  }
+
+  bool collidesWith(Position otherCoordinate) {
+    return _containsPoint(otherCoordinate.x, otherCoordinate.y);
   }
 
   bool _containsPoint(int x, int y) {
@@ -77,24 +103,6 @@ class TetrominoePosition {
     } else {
       return tetrominoeWidth(tetrominoe);
     }
-  }
-
-  TetrominoePosition rotated() {
-    Rotation newRotation = rotation;
-    if (tetrominoe == Tetrominoe.STRAIGHT) {
-      if (rotation == Rotation.NINETY) {
-        newRotation = Rotation.ZERO;
-      } else {
-        newRotation = Rotation.NINETY;
-      }
-    } else {
-      newRotation = nextRotation(rotation);
-    }
-
-
-//
-//    return TetrominoePosition(
-//        tetrominoe, verticalOffsetCount, horizontalOffsetCount, newRotation);
   }
 
   @override

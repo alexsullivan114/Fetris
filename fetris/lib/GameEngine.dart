@@ -34,7 +34,7 @@ class GameEngine {
       this.screenWidth = screenWidth;
       this.screenHeight = screenHeight;
       this.blockSize = screenWidth.floor() / 8;
-      active = TetrominoePosition.fromOffset(Tetrominoe.T, 0, 0, Rotation.ZERO);
+      active = TetrominoePosition.fromOffset(Tetrominoe.L, 0, 0, Rotation.ZERO);
     }
   }
 
@@ -157,7 +157,7 @@ class GameEngine {
   }
 
   GameEngine rotate() {
-    TetrominoePosition newActive = active.rotated();
+    TetrominoePosition newActive = TetrominoePosition.rotated(active);
     if (!tetrominoePositionCollidesWithExisting(newActive) &&
         !tetrominoePositionOutsideBounds(newActive)) {
       active = newActive;

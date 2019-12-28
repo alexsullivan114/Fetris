@@ -1,8 +1,8 @@
 import 'Tetrominoe.dart';
 import 'TetrominoePosition.dart';
 
-List<Position> tetronimoeCoordinates(int verticalOffsetCount, int horizontalOffsetCount,
-    Tetrominoe tetrominoe, Rotation rotation) {
+List<Position> tetronimoeCoordinates(int verticalOffsetCount,
+    int horizontalOffsetCount, Tetrominoe tetrominoe, Rotation rotation) {
   List<Position> positions = [];
   switch (tetrominoe) {
     case Tetrominoe.STRAIGHT:
@@ -85,4 +85,50 @@ List<Position> straightCoordinates(Rotation rotation, int horizontalOffsetCount,
   }
 
   return positions;
+}
+
+Position calculatePivot(
+    Tetrominoe tetrominoe, int verticalOffset, int horizontalOffset) {
+  int x = 0;
+  int y = 0;
+  switch (tetrominoe) {
+    case Tetrominoe.STRAIGHT:
+      x = horizontalOffset;
+      y = verticalOffset + 2;
+      break;
+    case Tetrominoe.SQUARE:
+      x = horizontalOffset;
+      y = verticalOffset;
+      break;
+    case Tetrominoe.T:
+      x = horizontalOffset + 1;
+      y = verticalOffset;
+      break;
+    case Tetrominoe.L:
+      x = horizontalOffset;
+      y = verticalOffset + 1;
+      break;
+    case Tetrominoe.S:
+      x = horizontalOffset + 1;
+      y = verticalOffset + 1;
+      break;
+  }
+
+  return Position(x, y);
+}
+
+List<Position> rotateCoordinates(List<Position> coordinates, Position pivot) {
+  List<Position> normalized = coordinates.map((position) {
+    return Position(position.x - pivot.x, position.y - pivot.y);
+  }).toList();
+
+  List<Position> rotated = normalized.map((position) {
+    return Position(position.y, -1 * position.x);
+  }).toList();
+
+  List<Position> denormalized = rotated.map((position) {
+    return Position(position.x + pivot.x, position.y + pivot.y);
+  }).toList();
+
+  return denormalized;
 }
