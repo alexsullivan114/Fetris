@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:fetris/TetrominoeBlock.dart';
+import 'package:flutter/material.dart';
 
 import 'Tetrominoe.dart';
 import 'TetrominoePosition.dart';
@@ -16,7 +17,9 @@ class GameEngine {
   TetrominoePosition active;
 
   List<TetrominoeBlock> get blocks {
-    final List<TetrominoeBlock> blocks = List.from(_fallenBlocks);
+    final List<TetrominoeBlock> blocks = [];
+    blocks.addAll(_projectedFinalActive(active));
+    blocks.addAll(_fallenBlocks);
     blocks.addAll(active.blocks());
     return blocks;
   }
@@ -104,6 +107,19 @@ class GameEngine {
     }).toList();
 
     return returnList;
+  }
+
+  List<TetrominoeBlock> _projectedFinalActive(TetrominoePosition active) {
+    var old = active;
+    while (!tetrominoePositionCollidesWithExisting(active) &&
+        !tetrominoePositionCollidesWithBottom(active)) {
+      old = active;
+      active = TetrominoePosition.down(active);
+    }
+
+    return old.blocks().map((block) {
+      return TetrominoeBlock(Colors.grey, block.position);
+    }).toList();
   }
 
   bool tetrominoePositionCollidesWithExisting(
