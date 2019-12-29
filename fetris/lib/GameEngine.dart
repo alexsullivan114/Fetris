@@ -34,7 +34,7 @@ class GameEngine {
       gameState = GameState.ACTIVE;
       this.screenWidth = screenWidth;
       this.screenHeight = screenHeight;
-      this.blockSize = screenWidth.floor() / 8;
+      this.blockSize = screenWidth.floor() / 10;
       active = TetrominoePosition.fromOffset(
           Tetrominoe.STRAIGHT, 0, 0, Rotation.ZERO);
     }
