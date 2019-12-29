@@ -68,6 +68,9 @@ class _TetrisBoardState extends State<TetrisBoard> {
               },
             ),
           ),
+          Center(
+              child: Text("Score: ${_gameEngine.score}",
+                  style: TextStyle(fontSize: 45)))
         ],
       );
     }

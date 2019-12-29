@@ -10,6 +10,7 @@ class GameEngine {
   double screenWidth;
   double screenHeight;
   GameState gameState = GameState.IDLE;
+  int score = 0;
 
   List<TetrominoeBlock> _fallenBlocks = [];
   TetrominoePosition active;
@@ -61,7 +62,9 @@ class GameEngine {
       active = advancedActive;
     }
 
-    _fallenBlocks = _clearCompleteLines(_fallenBlocks);
+    final newList = _clearCompleteLines(_fallenBlocks);
+    score += _fallenBlocks.length - newList.length;
+    _fallenBlocks = newList;
     return this;
   }
 
