@@ -74,23 +74,24 @@ class GameEngine {
     });
 
     var returnList = List<TetrominoeBlock>.from(_fallenBlocks);
-
+    final List<int> removedPositions = [];
     blockCountMap.forEach((verticalPosition, count) {
       if (count >= maxHorizontalBlockCount) {
+        removedPositions.add(verticalPosition);
         returnList.removeWhere((block) {
           return block.position.y == verticalPosition;
         });
-        returnList = returnList.map((block) {
-          Position blockPosition = block.position;
-          if (blockPosition.y < verticalPosition) {
-            return TetrominoeBlock(
-                block.color, Position(blockPosition.x, blockPosition.y + 1));
-          } else {
-            return block;
-          }
-        }).toList();
       }
     });
+
+    returnList = returnList.map((block) {
+      Position blockPosition = block.position;
+      final numRemovedRows = removedPositions.takeWhile((position) {
+        return position > blockPosition.y;
+      }).toList();
+      return TetrominoeBlock(block.color,
+          Position(blockPosition.x, blockPosition.y + numRemovedRows.length));
+    }).toList();
 
     return returnList;
   }
