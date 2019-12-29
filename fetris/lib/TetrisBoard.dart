@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:fetris/GamePad.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'GameEngine.dart';
@@ -21,7 +22,7 @@ class _TetrisBoardState extends State<TetrisBoard> {
   @override
   void initState() {
     super.initState();
-    Timer.periodic(new Duration(seconds: 1), (Timer timer) {
+    Timer.periodic(new Duration(milliseconds: 100), (Timer timer) {
       setState(() {
         _gameEngine = _gameEngine.tick();
       });
@@ -30,12 +31,8 @@ class _TetrisBoardState extends State<TetrisBoard> {
 
   @override
   Widget build(BuildContext context) {
-    if (_gameEngine.gameState == GameState.DONE) {
-      return Center(
-          child: Text("YOU LOSE",
-              style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold)));
-    } else {
-      return Column(
+    final List<Widget> children = [
+      Column(
         verticalDirection: VerticalDirection.up,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -72,7 +69,35 @@ class _TetrisBoardState extends State<TetrisBoard> {
               child: Text("Score: ${_gameEngine.score}",
                   style: TextStyle(fontSize: 45)))
         ],
-      );
+      )
+    ];
+    if (_gameEngine.gameState == GameState.DONE) {
+      children.add(GameOverOverlay(_gameEngine.score));
     }
+    return Stack(children: children);
+  }
+}
+
+class GameOverOverlay extends StatelessWidget {
+  final int score;
+
+  const GameOverOverlay(this.score);
+
+  @override
+  Widget build(BuildContext context) {
+    return Opacity(
+        opacity: 0.8,
+        child: Container(
+            color: Colors.black,
+            child: Center(
+                child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text("Game Over",
+                    style: TextStyle(color: Colors.white, fontSize: 48)),
+                Text("Score: $score",
+                    style: TextStyle(color: Colors.white, fontSize: 48)),
+              ],
+            ))));
   }
 }

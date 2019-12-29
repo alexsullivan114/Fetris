@@ -41,6 +41,9 @@ class GameEngine {
   }
 
   GameEngine tick() {
+    if (gameState != GameState.ACTIVE) {
+      return this;
+    }
     TetrominoePosition advancedActive = TetrominoePosition.down(active);
     if (tetrominoePositionCollidesWithBottom(advancedActive)) {
       TetrominoePosition nextActive = _generateNewTetrominoe();
