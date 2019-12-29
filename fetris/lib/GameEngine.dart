@@ -40,6 +40,10 @@ class GameEngine {
     }
   }
 
+  GameEngine restart() {
+    return GameEngine()..initialize(screenWidth, screenHeight);
+  }
+
   GameEngine tick() {
     if (gameState != GameState.ACTIVE) {
       return this;

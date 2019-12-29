@@ -72,7 +72,11 @@ class _TetrisBoardState extends State<TetrisBoard> {
       )
     ];
     if (_gameEngine.gameState == GameState.DONE) {
-      children.add(GameOverOverlay(_gameEngine.score));
+      children.add(GameOverOverlay(_gameEngine.score, () {
+        setState(() {
+          _gameEngine = _gameEngine.restart();
+        });
+      }));
     }
     return Stack(children: children);
   }
@@ -80,8 +84,9 @@ class _TetrisBoardState extends State<TetrisBoard> {
 
 class GameOverOverlay extends StatelessWidget {
   final int score;
+  final void Function() replayClicked;
 
-  const GameOverOverlay(this.score);
+  const GameOverOverlay(this.score, this.replayClicked);
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +102,9 @@ class GameOverOverlay extends StatelessWidget {
                     style: TextStyle(color: Colors.white, fontSize: 48)),
                 Text("Score: $score",
                     style: TextStyle(color: Colors.white, fontSize: 48)),
+                IconButton(
+                    icon: Icon(Icons.replay, color: Colors.white),
+                    onPressed: replayClicked),
               ],
             ))));
   }
