@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fetris/GamePad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -55,67 +56,23 @@ class _TetrisBoardState extends State<TetrisBoard> {
                       style: TextStyle(fontSize: 45)))
             ],
           ),
-          Positioned(
-              left: 0,
-              bottom: 0,
-              top: 0,
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _gameEngine = _gameEngine.left();
-                  });
-                },
-                child: Container(
-                  width: 100,
-                  color: Colors.transparent,
-                ),
-              )),
-          Positioned(
-              right: 0,
-              bottom: 0,
-              top: 0,
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _gameEngine = _gameEngine.right();
-                  });
-                },
-                child: Container(
-                  width: 100,
-                  color: Colors.transparent,
-                ),
-              )),
-          Positioned(
-              left: 0,
-              bottom: 0,
-              right: 0,
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _gameEngine = _gameEngine.down();
-                  });
-                },
-                child: Container(
-                  height: 100,
-                  color: Colors.transparent,
-                ),
-              )),
-          Positioned(
-              left: 100,
-              bottom: 100,
-              right: 100,
-              top: 0,
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _gameEngine = _gameEngine.rotate();
-                  });
-                },
-                child: Container(
-                  height: 100,
-                  color: Colors.transparent,
-                ),
-              )),
+          GamePad(() {
+            setState(() {
+              _gameEngine = _gameEngine.left();
+            });
+          }, () {
+            setState(() {
+              _gameEngine = _gameEngine.down();
+            });
+          }, () {
+            setState(() {
+              _gameEngine = _gameEngine.right();
+            });
+          }, () {
+            setState(() {
+              _gameEngine = _gameEngine.rotate();
+            });
+          })
         ],
       )
     ];

@@ -12,39 +12,52 @@ class GamePad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 60,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          GamePadButton("LEFT", onLeftPressed),
-          GamePadButton("DOWN", onDownPressed),
-          GamePadButton("RIGHT", onRightPressed),
-          GamePadButton("TWIST", onRotatePressed),
-        ],
-      ),
-    );
-  }
-}
-
-class GamePadButton extends StatelessWidget {
-  final void Function() _onButtonPressed;
-  final String _text;
-
-  GamePadButton(this._text, this._onButtonPressed);
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: FlatButton(
-        onPressed: _onButtonPressed,
-        child: Center(
-          child: Text(
-            _text,
-            style: TextStyle(fontSize: 20),
-          ),
-        ),
-      ),
-    );
+    return Stack(children: [
+      Positioned(
+          left: 0,
+          bottom: 0,
+          top: 0,
+          child: GestureDetector(
+            onTap: onLeftPressed,
+            child: Container(
+              width: 100,
+              color: Colors.transparent,
+            ),
+          )),
+      Positioned(
+          right: 0,
+          bottom: 0,
+          top: 0,
+          child: GestureDetector(
+            onTap: onRightPressed,
+            child: Container(
+              width: 100,
+              color: Colors.transparent,
+            ),
+          )),
+      Positioned(
+          left: 0,
+          bottom: 0,
+          right: 0,
+          child: GestureDetector(
+            onTap: onDownPressed,
+            child: Container(
+              height: 100,
+              color: Colors.transparent,
+            ),
+          )),
+      Positioned(
+          left: 100,
+          bottom: 100,
+          right: 100,
+          top: 0,
+          child: GestureDetector(
+            onTap: onRotatePressed,
+            child: Container(
+              height: 100,
+              color: Colors.transparent,
+            ),
+          ))
+    ]);
   }
 }
