@@ -165,12 +165,14 @@ class GameEngine {
   }
 
   GameEngine down() {
-    TetrominoePosition newActive = TetrominoePosition.down(active);
-    if (!tetrominoePositionCollidesWithExisting(newActive) &&
+    var old = active;
+    TetrominoePosition newActive = TetrominoePosition.down(old);
+    while (!tetrominoePositionCollidesWithExisting(newActive) &&
         !tetrominoePositionCollidesWithBottom(newActive)) {
-      active = newActive;
+      old = newActive;
+      newActive = TetrominoePosition.down(newActive);
     }
-
+    active = old;
     return this;
   }
 
