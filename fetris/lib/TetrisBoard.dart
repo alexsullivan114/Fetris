@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:fetris/GamePad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'GameEngine.dart';
+import 'GameOverlay.dart';
 import 'ShapesPainter.dart';
 
 class TetrisBoard extends StatefulWidget {
@@ -22,7 +22,7 @@ class _TetrisBoardState extends State<TetrisBoard> {
   @override
   void initState() {
     super.initState();
-    Timer.periodic(new Duration(milliseconds: 400), (Timer timer) {
+    Timer.periodic(new Duration(milliseconds: 500), (Timer timer) {
       setState(() {
         _gameEngine = _gameEngine.tick();
       });
@@ -32,42 +32,90 @@ class _TetrisBoardState extends State<TetrisBoard> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> children = [
-      Column(
-        verticalDirection: VerticalDirection.up,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          GamePad(() {
-            setState(() {
-              _gameEngine = _gameEngine.left();
-            });
-          }, () {
-            setState(() {
-              _gameEngine = _gameEngine.down();
-            });
-          }, () {
-            setState(() {
-              _gameEngine = _gameEngine.right();
-            });
-          }, () {
-            setState(() {
-              _gameEngine = _gameEngine.rotate();
-            });
-          }),
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                _gameEngine.initialize(
-                    constraints.maxWidth, constraints.maxHeight);
-                return CustomPaint(
-                  painter:
-                      ShapesPainter(_gameEngine.blocks, _gameEngine.blockSize),
-                );
-              },
-            ),
+      Stack(
+        children: [
+          Column(
+            verticalDirection: VerticalDirection.up,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    _gameEngine.initialize(
+                        constraints.maxWidth, constraints.maxHeight);
+                    return CustomPaint(
+                      painter: ShapesPainter(
+                          _gameEngine.blocks, _gameEngine.blockSize),
+                    );
+                  },
+                ),
+              ),
+              Center(
+                  child: Text("Score: ${_gameEngine.score}",
+                      style: TextStyle(fontSize: 45)))
+            ],
           ),
-          Center(
-              child: Text("Score: ${_gameEngine.score}",
-                  style: TextStyle(fontSize: 45)))
+          Positioned(
+              left: 0,
+              bottom: 0,
+              top: 0,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _gameEngine = _gameEngine.left();
+                  });
+                },
+                child: Container(
+                  width: 100,
+                  color: Colors.transparent,
+                ),
+              )),
+          Positioned(
+              right: 0,
+              bottom: 0,
+              top: 0,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _gameEngine = _gameEngine.right();
+                  });
+                },
+                child: Container(
+                  width: 100,
+                  color: Colors.transparent,
+                ),
+              )),
+          Positioned(
+              left: 0,
+              bottom: 0,
+              right: 0,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _gameEngine = _gameEngine.down();
+                  });
+                },
+                child: Container(
+                  height: 100,
+                  color: Colors.transparent,
+                ),
+              )),
+          Positioned(
+              left: 100,
+              bottom: 100,
+              right: 100,
+              top: 0,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _gameEngine = _gameEngine.rotate();
+                  });
+                },
+                child: Container(
+                  height: 100,
+                  color: Colors.transparent,
+                ),
+              )),
         ],
       )
     ];
@@ -79,33 +127,5 @@ class _TetrisBoardState extends State<TetrisBoard> {
       }));
     }
     return Stack(children: children);
-  }
-}
-
-class GameOverOverlay extends StatelessWidget {
-  final int score;
-  final void Function() replayClicked;
-
-  const GameOverOverlay(this.score, this.replayClicked);
-
-  @override
-  Widget build(BuildContext context) {
-    return Opacity(
-        opacity: 0.8,
-        child: Container(
-            color: Colors.black,
-            child: Center(
-                child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text("Game Over",
-                    style: TextStyle(color: Colors.white, fontSize: 48)),
-                Text("Score: $score",
-                    style: TextStyle(color: Colors.white, fontSize: 48)),
-                IconButton(
-                    icon: Icon(Icons.replay, color: Colors.white),
-                    onPressed: replayClicked),
-              ],
-            ))));
   }
 }
