@@ -7,6 +7,8 @@ import 'Tetrominoe.dart';
 import 'TetrominoePosition.dart';
 
 class GameEngine {
+  final int maxHorizontalBlockCount = 8;
+  final int maxVerticalBlockCount = 16;
   double blockSize;
   double screenWidth;
   double screenHeight;
@@ -24,13 +26,6 @@ class GameEngine {
     return blocks;
   }
 
-  int get maxHorizontalBlockCount {
-    return 8;
-  }
-
-  int get maxVerticalBlockCount {
-    return 20;
-  }
 
   void initialize(double screenWidth, double screenHeight) {
     if (gameState == GameState.IDLE) {
@@ -38,6 +33,7 @@ class GameEngine {
       this.screenWidth = screenWidth;
       this.screenHeight = screenHeight;
       this.blockSize = screenHeight / maxVerticalBlockCount;
+      this.blockSize = min(screenHeight.floor() / maxVerticalBlockCount, screenWidth.floor() / maxHorizontalBlockCount);
       active = TetrominoePosition.fromOffset(
           Tetrominoe.STRAIGHT, 0, 0, Rotation.ZERO);
     }
