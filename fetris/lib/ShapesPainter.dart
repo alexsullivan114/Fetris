@@ -12,11 +12,10 @@ class ShapesPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    print("Size: " + size.toString());
+    _drawGrid(canvas, _blockSize, _horizontalCount, _verticalCount);
     _blocks.forEach((tetrominoeBlock) {
       _drawTetrominoeBlock(tetrominoeBlock, canvas, _blockSize);
     });
-    _drawGrid(canvas, _blockSize, _horizontalCount, _verticalCount);
   }
 
   @override
