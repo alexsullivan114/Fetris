@@ -36,24 +36,33 @@ class _TetrisBoardState extends State<TetrisBoard> {
       Stack(
         children: [
           Column(
-            verticalDirection: VerticalDirection.up,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
+              Center(
+                child: Text("Score: ${_gameEngine.score}",
+                    style: TextStyle(fontSize: 45)),
+              ),
               Expanded(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     _gameEngine.initialize(
                         constraints.maxWidth, constraints.maxHeight);
-                    return CustomPaint(
-                      painter: ShapesPainter(
-                          _gameEngine.blocks, _gameEngine.blockSize),
+                    return Center(
+                      child: Container(
+                        width: _gameEngine.maxHorizontalBlockCount * _gameEngine.blockSize,
+                        height: _gameEngine.maxVerticalBlockCount * _gameEngine.blockSize,
+                        child: CustomPaint(
+                          painter: ShapesPainter(
+                              _gameEngine.blocks,
+                              _gameEngine.blockSize,
+                              _gameEngine.maxHorizontalBlockCount,
+                              _gameEngine.maxVerticalBlockCount),
+                        ),
+                      ),
                     );
                   },
                 ),
               ),
-              Center(
-                  child: Text("Score: ${_gameEngine.score}",
-                      style: TextStyle(fontSize: 45)))
             ],
           ),
           GamePad(() {

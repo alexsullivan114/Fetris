@@ -25,11 +25,11 @@ class GameEngine {
   }
 
   int get maxHorizontalBlockCount {
-    return (screenWidth / blockSize).floor();
+    return 8;
   }
 
   int get maxVerticalBlockCount {
-    return (screenHeight / blockSize).floor();
+    return 20;
   }
 
   void initialize(double screenWidth, double screenHeight) {
@@ -37,7 +37,7 @@ class GameEngine {
       gameState = GameState.ACTIVE;
       this.screenWidth = screenWidth;
       this.screenHeight = screenHeight;
-      this.blockSize = screenWidth.floor() / 10;
+      this.blockSize = screenHeight / maxVerticalBlockCount;
       active = TetrominoePosition.fromOffset(
           Tetrominoe.STRAIGHT, 0, 0, Rotation.ZERO);
     }
