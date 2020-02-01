@@ -1,3 +1,4 @@
+import 'package:fetris/FetrisColorTheme.dart';
 import 'package:fetris/TetrominoeBlock.dart';
 import 'package:fetris/shapeMath.dart';
 
@@ -8,18 +9,24 @@ class TetrominoePosition {
   final List<Position> coordinates;
   final Rotation rotation;
   final Position pivot;
+  final FetrisColorTheme theme;
 
   TetrominoePosition(
-      this.tetrominoe, this.coordinates, this.rotation, this.pivot);
+      this.tetrominoe, this.coordinates, this.rotation, this.pivot, this.theme);
 
-  factory TetrominoePosition.fromOffset(Tetrominoe tetrominoe,
-      int verticalOffset, int horizontalOffset, Rotation rotation) {
+  factory TetrominoePosition.fromOffset(
+      Tetrominoe tetrominoe,
+      int verticalOffset,
+      int horizontalOffset,
+      Rotation rotation,
+      FetrisColorTheme theme) {
     return TetrominoePosition(
         tetrominoe,
         tetronimoeCoordinates(
             verticalOffset, horizontalOffset, tetrominoe, rotation),
         rotation,
-        calculatePivot(tetrominoe, verticalOffset, horizontalOffset));
+        calculatePivot(tetrominoe, verticalOffset, horizontalOffset),
+        theme);
   }
 
   factory TetrominoePosition.left(TetrominoePosition old) {
@@ -29,7 +36,7 @@ class TetrominoePosition {
     Position newPivot = Position(old.pivot.x - 1, old.pivot.y);
 
     return TetrominoePosition(
-        old.tetrominoe, newCoordinates, old.rotation, newPivot);
+        old.tetrominoe, newCoordinates, old.rotation, newPivot, old.theme);
   }
 
   factory TetrominoePosition.right(TetrominoePosition old) {
@@ -39,7 +46,7 @@ class TetrominoePosition {
     Position newPivot = Position(old.pivot.x + 1, old.pivot.y);
 
     return TetrominoePosition(
-        old.tetrominoe, newCoordinates, old.rotation, newPivot);
+        old.tetrominoe, newCoordinates, old.rotation, newPivot, old.theme);
   }
 
   factory TetrominoePosition.down(TetrominoePosition old) {
@@ -49,7 +56,7 @@ class TetrominoePosition {
     Position newPivot = Position(old.pivot.x, old.pivot.y + 1);
 
     return TetrominoePosition(
-        old.tetrominoe, newCoordinates, old.rotation, newPivot);
+        old.tetrominoe, newCoordinates, old.rotation, newPivot, old.theme);
   }
 
   factory TetrominoePosition.rotated(TetrominoePosition old) {
@@ -66,7 +73,7 @@ class TetrominoePosition {
 
     final newCoordinates = rotateCoordinates(old.coordinates, old.pivot);
     return TetrominoePosition(
-        old.tetrominoe, newCoordinates, newRotation, old.pivot);
+        old.tetrominoe, newCoordinates, newRotation, old.pivot, old.theme);
   }
 
   bool collidesWith(Position otherCoordinate) {
@@ -85,7 +92,7 @@ class TetrominoePosition {
 
   List<TetrominoeBlock> blocks() {
     return coordinates.map((position) {
-      return TetrominoeBlock(tetrominoeColor(tetrominoe), position);
+      return TetrominoeBlock(theme[tetrominoe], position);
     }).toList();
   }
 

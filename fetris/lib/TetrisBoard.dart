@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fetris/FetrisColorTheme.dart';
 import 'package:fetris/GamePad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -17,7 +18,7 @@ class _TetrisBoardState extends State<TetrisBoard> {
   GameEngine _gameEngine;
 
   _TetrisBoardState() {
-    _gameEngine = GameEngine();
+    _gameEngine = GameEngine(FetrisColorTheme.grayScale());
   }
 
   @override

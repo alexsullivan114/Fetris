@@ -45,25 +45,3 @@ int tetrominoeWidth(Tetrominoe tetrominoe) {
 
   return 0;
 }
-
-ColorSwatch<int> tetrominoeColor(Tetrominoe tetrominoe) {
-  switch (tetrominoe) {
-    case Tetrominoe.STRAIGHT:
-      return Colors.cyanAccent;
-      break;
-    case Tetrominoe.SQUARE:
-      return Colors.yellow;
-      break;
-    case Tetrominoe.T:
-      return Colors.red;
-      break;
-    case Tetrominoe.L:
-      return Colors.green;
-      break;
-    case Tetrominoe.S:
-      return Colors.blue;
-      break;
-  }
-
-  return Colors.grey;
-}

@@ -1,8 +1,6 @@
 import 'package:fetris/TetrominoeBlock.dart';
 import 'package:flutter/material.dart';
 
-import 'drawShapes.dart';
-
 class ShapesPainter extends CustomPainter {
   final List<TetrominoeBlock> _blocks;
   final double _blockSize;
@@ -16,15 +14,15 @@ class ShapesPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     print("Size: " + size.toString());
     _blocks.forEach((tetrominoeBlock) {
-      drawTetrominoeBlock(tetrominoeBlock, canvas, _blockSize);
+      _drawTetrominoeBlock(tetrominoeBlock, canvas, _blockSize);
     });
-    drawGrid(canvas, _blockSize, _horizontalCount, _verticalCount);
+    _drawGrid(canvas, _blockSize, _horizontalCount, _verticalCount);
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => true;
 
-  void drawGrid(
+  void _drawGrid(
       Canvas canvas, double blockSize, int horizontalCount, int verticalCount) {
     final paint = Paint()
       ..strokeWidth = 1
@@ -38,5 +36,14 @@ class ShapesPainter extends CustomPainter {
         canvas.drawRect(box, paint);
       }
     }
+  }
+
+  void _drawTetrominoeBlock(
+      TetrominoeBlock block, Canvas canvas, double blockSize) {
+    final shapePainter = Paint()..color = block.color;
+    final position = block.position;
+    final shapeRect = Rect.fromLTWH(
+        position.x * blockSize, position.y * blockSize, blockSize, blockSize);
+    canvas.drawRect(shapeRect, shapePainter);
   }
 }
