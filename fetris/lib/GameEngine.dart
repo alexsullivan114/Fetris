@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:fetris/FetrisColorTheme.dart';
 import 'package:fetris/TetrominoeBlock.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +15,20 @@ class GameEngine {
   double screenHeight;
   GameState gameState = GameState.IDLE;
   int score = 0;
+  FetrisColorTheme _theme;
+
+  FetrisColorTheme get theme => _theme;
+
+  set theme(FetrisColorTheme theme) {
+    _theme = theme;
+    _fallenBlocks = _fallenBlocks
+        .map((block) => TetrominoeBlock(_theme[block.originalTetrominoe],
+            block.position, block.originalTetrominoe))
+        .toList();
+
+    active = TetrominoePosition(active.tetrominoe, active.coordinates,
+        active.rotation, active.pivot, theme);
+  }
 
   List<TetrominoeBlock> _fallenBlocks = [];
   TetrominoePosition active;
@@ -26,6 +41,8 @@ class GameEngine {
     return blocks;
   }
 
+  GameEngine(this._theme);
+
   void initialize(double screenWidth, double screenHeight) {
     if (gameState == GameState.IDLE) {
       gameState = GameState.ACTIVE;
@@ -35,12 +52,12 @@ class GameEngine {
       this.blockSize = min(screenHeight.floor() / maxVerticalBlockCount,
           screenWidth.floor() / maxHorizontalBlockCount);
       active = TetrominoePosition.fromOffset(
-          Tetrominoe.STRAIGHT, 0, 0, Rotation.ZERO);
+          Tetrominoe.STRAIGHT, 0, 0, Rotation.ZERO, theme);
     }
   }
 
   GameEngine restart() {
-    return GameEngine()..initialize(screenWidth, screenHeight);
+    return GameEngine(theme)..initialize(screenWidth, screenHeight);
   }
 
   GameEngine tick() {
@@ -91,8 +108,10 @@ class GameEngine {
       final numRemovedRows = removedPositions.takeWhile((position) {
         return position > blockPosition.y;
       }).toList();
-      return TetrominoeBlock(block.color,
-          Position(blockPosition.x, blockPosition.y + numRemovedRows.length));
+      return TetrominoeBlock(
+          block.color,
+          Position(blockPosition.x, blockPosition.y + numRemovedRows.length),
+          block.originalTetrominoe);
     }).toList();
 
     return returnList;
@@ -107,7 +126,7 @@ class GameEngine {
     }
 
     return old.blocks().map((block) {
-      return TetrominoeBlock(Colors.grey, block.position);
+      return TetrominoeBlock(Colors.grey, block.position, null);
     }).toList();
   }
 
@@ -191,7 +210,7 @@ class GameEngine {
         tetrominoeWidth(nextTetrominoe);
     int horizontal = max(0, horizontalMax);
     return TetrominoePosition.fromOffset(
-        nextTetrominoe, 0, horizontal, Rotation.ZERO);
+        nextTetrominoe, 0, horizontal, Rotation.ZERO, theme);
   }
 
   Tetrominoe _randomTetrominoe() {

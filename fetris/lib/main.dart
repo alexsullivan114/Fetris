@@ -1,5 +1,7 @@
+import 'package:fetris/FetrisColorTheme.dart';
 import 'package:flutter/material.dart';
 
+import 'Drawer.dart';
 import 'TetrisBoard.dart';
 
 void main() => runApp(MyApp());
@@ -13,10 +15,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
-        body: SafeArea(child: LayoutBuilder(builder: (context, constraints) {
-          return TetrisBoard();
-        })),
-      ),
+          drawer: Drawer(
+            child: DrawerContents(),
+          ),
+          body: SafeArea(
+              child: Stack(children: [
+            TetrisBoard(),
+            DrawerButton(),
+          ]))),
     );
   }
 }
