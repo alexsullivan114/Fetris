@@ -8,8 +8,9 @@ import 'Tetrominoe.dart';
 import 'TetrominoePosition.dart';
 
 class GameEngine {
-  final int maxHorizontalBlockCount = 8;
-  final int maxVerticalBlockCount = 16;
+  static const int maxHorizontalBlockCount = 8;
+  static const int originalMaxVerticalBlockCount = 16;
+  int maxVerticalBlockCount = originalMaxVerticalBlockCount;
   double blockSize;
   double screenWidth;
   double screenHeight;
@@ -73,15 +74,42 @@ class GameEngine {
       } else {
         _fallenBlocks.addAll(active.blocks());
         active = nextActive;
+        maxVerticalBlockCount -= 1;
+        _fallenBlocks = _decreaseHeight();
       }
     } else {
       active = advancedActive;
     }
 
     final newList = _clearCompleteLines(_fallenBlocks);
-    score += _fallenBlocks.length - newList.length;
+    final addedPoints = _fallenBlocks.length - newList.length;
+    score += addedPoints;
     _fallenBlocks = newList;
+    if (addedPoints > 0) {
+      final theoreticalHeightIncrease = (addedPoints / maxHorizontalBlockCount).floor() * 2;
+      final actualIncrease= min(theoreticalHeightIncrease, originalMaxVerticalBlockCount - maxVerticalBlockCount);
+      maxVerticalBlockCount += actualIncrease;
+      _fallenBlocks = _increaseHeight(actualIncrease);
+    }
+
     return this;
+  }
+
+  List<TetrominoeBlock>_decreaseHeight() {
+    return _fallenBlocks.map((block) {
+      final newPosition = Position(block.position.x, block.position.y - 1);
+      return TetrominoeBlock(
+          block.color, newPosition, block.originalTetrominoe);
+    }).toList();
+  }
+
+  List<TetrominoeBlock> _increaseHeight(int increaseCount) {
+    return _fallenBlocks = _fallenBlocks.map((block) {
+      final newPosition =
+          Position(block.position.x, block.position.y + increaseCount);
+      return TetrominoeBlock(
+          block.color, newPosition, block.originalTetrominoe);
+    }).toList();
   }
 
   List<TetrominoeBlock> _clearCompleteLines(List<TetrominoeBlock> blocks) {

@@ -25,7 +25,7 @@ class _TetrisBoardState extends State<TetrisBoard> {
   @override
   void initState() {
     super.initState();
-    Timer.periodic(new Duration(milliseconds: 500), (Timer timer) {
+    Timer.periodic(new Duration(milliseconds: 1000), (Timer timer) {
       setState(() {
         _gameEngine = _gameEngine.tick();
       });
@@ -56,7 +56,7 @@ class _TetrisBoardState extends State<TetrisBoard> {
                           constraints.maxWidth, constraints.maxHeight);
                       return Center(
                         child: Container(
-                          width: _gameEngine.maxHorizontalBlockCount *
+                          width: GameEngine.maxHorizontalBlockCount *
                               _gameEngine.blockSize,
                           height: _gameEngine.maxVerticalBlockCount *
                               _gameEngine.blockSize,
@@ -64,7 +64,7 @@ class _TetrisBoardState extends State<TetrisBoard> {
                             painter: ShapesPainter(
                                 _gameEngine.blocks,
                                 _gameEngine.blockSize,
-                                _gameEngine.maxHorizontalBlockCount,
+                                GameEngine.maxHorizontalBlockCount,
                                 _gameEngine.maxVerticalBlockCount,
                                 _gameEngine.theme),
                           ),
