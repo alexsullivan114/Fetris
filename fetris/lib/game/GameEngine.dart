@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:fetris/FetrisColorTheme.dart';
-import 'package:fetris/TetrominoeBlock.dart';
+import 'package:fetris/game/TetrominoeBlock.dart';
 import 'package:flutter/material.dart';
 
 import 'Tetrominoe.dart';
@@ -42,7 +42,11 @@ class GameEngine {
     return blocks;
   }
 
-  GameEngine(this._theme);
+  GameEngine(FetrisColorTheme theme) {
+    _theme = theme;
+    active = TetrominoePosition.fromOffset(
+        Tetrominoe.STRAIGHT, 0, 0, Rotation.ZERO, theme);
+  }
 
   void initialize(double screenWidth, double screenHeight) {
     if (gameState == GameState.IDLE) {
@@ -52,8 +56,6 @@ class GameEngine {
       this.blockSize = screenHeight / maxVerticalBlockCount;
       this.blockSize = min(screenHeight.floor() / maxVerticalBlockCount,
           screenWidth.floor() / maxHorizontalBlockCount);
-      active = TetrominoePosition.fromOffset(
-          Tetrominoe.STRAIGHT, 0, 0, Rotation.ZERO, theme);
     }
   }
 

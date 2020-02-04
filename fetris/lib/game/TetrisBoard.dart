@@ -1,8 +1,8 @@
-import 'dart:async';
+import'dart:async';
 
 import 'package:fetris/FetrisColorTheme.dart';
-import 'package:fetris/GamePad.dart';
-import 'package:fetris/SelectedTheme.dart';
+import 'GamePad.dart';
+import 'package:fetris/streams/SelectedTheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -90,6 +90,7 @@ class _TetrisBoardState extends State<TetrisBoard> {
           }, () {
             setState(() {
               _gameEngine = _gameEngine.down();
+              _gameEngine = _gameEngine.tick();
             });
           }, () {
             setState(() {

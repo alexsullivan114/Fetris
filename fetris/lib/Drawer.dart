@@ -1,10 +1,10 @@
-import 'package:fetris/SelectedTheme.dart';
+import 'package:fetris/streams/SelectedTheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'FetrisColorTheme.dart';
-import 'Pair.dart';
-import 'Tetrominoe.dart';
+import 'utils/Pair.dart';
+import 'game/Tetrominoe.dart';
 
 class DrawerContents extends StatelessWidget {
   final themes = [

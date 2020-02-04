@@ -1,4 +1,4 @@
-import 'package:fetris/Tetrominoe.dart';
+import 'package:fetris/game/Tetrominoe.dart';
 import 'package:flutter/material.dart';
 
 class FetrisColorTheme {

@@ -1,5 +1,5 @@
-import 'package:fetris/Tetrominoe.dart';
-import 'package:fetris/TetrominoePosition.dart';
+import 'Tetrominoe.dart';
+import 'package:fetris/game/TetrominoePosition.dart';
 import 'package:flutter/material.dart';
 
 class TetrominoeBlock {

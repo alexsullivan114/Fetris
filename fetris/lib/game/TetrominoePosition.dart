@@ -1,6 +1,6 @@
-import 'package:fetris/FetrisColorTheme.dart';
-import 'package:fetris/TetrominoeBlock.dart';
-import 'package:fetris/shapeMath.dart';
+import'package:fetris/FetrisColorTheme.dart';
+import 'package:fetris/game/TetrominoeBlock.dart';
+import 'package:fetris/game/shapeMath.dart';
 
 import 'Tetrominoe.dart';
 

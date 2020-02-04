@@ -1,14 +1,13 @@
 import 'package:fetris/FetrisColorTheme.dart';
-import 'package:fetris/SelectedTheme.dart';
+import 'package:fetris/streams/SelectedTheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'Drawer.dart';
-import 'TetrisBoard.dart';
+import 'game/TetrisBoard.dart';
 
 void main() {
   selectedTheme.listen((theme) {
-    print("Theme: $theme");
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: theme.backgroundColor,
       statusBarBrightness: theme.isDark ? Brightness.light : Brightness.dark,
