@@ -71,4 +71,16 @@ class FetrisColorTheme {
         grid: Colors.white,
         gridLine: Colors.deepOrange);
   }
+
+  factory FetrisColorTheme.chill() {
+    return FetrisColorTheme(
+      t: Color(0xFFE27d60),
+      straight: Color(0xFF85DCFF),
+      square: Color(0xFFE8A87C),
+      l: Color(0xFFC38D9E),
+      s: Color(0xFF41B3A3),
+      grid: Colors.white,
+      gridLine: Color(0xFF342582),
+    );
+  }
 }

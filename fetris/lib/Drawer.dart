@@ -10,7 +10,8 @@ class DrawerContents extends StatelessWidget {
   final themes = [
     Pair(FetrisColorTheme.halloween(), "Halloween"),
     Pair(FetrisColorTheme.grayScale(), "Gray Scale"),
-    Pair(FetrisColorTheme.material(), "Material")
+    Pair(FetrisColorTheme.material(), "Material"),
+    Pair(FetrisColorTheme.chill(), "Chill")
   ];
 
   @override
