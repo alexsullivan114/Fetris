@@ -19,7 +19,7 @@ class _TetrisBoardState extends State<TetrisBoard> {
   GameEngine _gameEngine;
 
   _TetrisBoardState() {
-    _gameEngine = GameEngine(FetrisColorTheme.grayScale());
+    _gameEngine = GameEngine(selectedThemeSubject.value);
   }
 
   @override
@@ -30,8 +30,10 @@ class _TetrisBoardState extends State<TetrisBoard> {
         _gameEngine = _gameEngine.tick();
       });
     });
-    selectedTheme.stream.listen((theme) {
-      _gameEngine.theme = theme;
+    selectedTheme.listen((theme) {
+      setState(() {
+        _gameEngine.theme = theme;
+      });
     });
   }
 
@@ -40,41 +42,46 @@ class _TetrisBoardState extends State<TetrisBoard> {
     final List<Widget> children = [
       Stack(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Center(
-                child: Text("Score: ${_gameEngine.score}",
-                    style: TextStyle(fontSize: 45)),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      _gameEngine.initialize(
-                          constraints.maxWidth, constraints.maxHeight);
-                      return Center(
-                        child: Container(
-                          width: GameEngine.maxHorizontalBlockCount *
-                              _gameEngine.blockSize,
-                          height: _gameEngine.maxVerticalBlockCount *
-                              _gameEngine.blockSize,
-                          child: CustomPaint(
-                            painter: ShapesPainter(
-                                _gameEngine.blocks,
-                                _gameEngine.blockSize,
-                                GameEngine.maxHorizontalBlockCount,
-                                _gameEngine.maxVerticalBlockCount,
-                                _gameEngine.theme),
-                          ),
-                        ),
-                      );
-                    },
+          Container(
+            color: _gameEngine.theme.backgroundColor,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Center(
+                  child: Text("Score: ${_gameEngine.score}",
+                      style: TextStyle(fontSize: 45, color: _gameEngine.theme.accentColor)),
+                ),
+                Expanded(
+                  child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          _gameEngine.initialize(
+                              constraints.maxWidth, constraints.maxHeight);
+                          return Center(
+                            child: Container(
+                              width: GameEngine.maxHorizontalBlockCount *
+                                  _gameEngine.blockSize,
+                              height: _gameEngine.maxVerticalBlockCount *
+                                  _gameEngine.blockSize,
+                              child: CustomPaint(
+                                painter: ShapesPainter(
+                                    _gameEngine.blocks,
+                                    _gameEngine.blockSize,
+                                    GameEngine.maxHorizontalBlockCount,
+                                    _gameEngine.maxVerticalBlockCount,
+                                    _gameEngine.theme),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           GamePad(() {
             setState(() {

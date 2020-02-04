@@ -9,6 +9,9 @@ class FetrisColorTheme {
   final Color s;
   final Color grid;
   final Color gridLine;
+  final Color backgroundColor;
+  final Color accentColor;
+  final bool isDark;
 
   operator [](Tetrominoe tetrominoe) {
     switch (tetrominoe) {
@@ -37,7 +40,10 @@ class FetrisColorTheme {
       this.l,
       this.s,
       this.grid,
-      this.gridLine});
+      this.gridLine,
+      this.backgroundColor,
+      this.accentColor,
+      this.isDark});
 
   factory FetrisColorTheme.halloween() {
     return FetrisColorTheme(
@@ -47,7 +53,10 @@ class FetrisColorTheme {
         l: Color(0xFFBFDA7A),
         s: Color(0xFF96C457),
         grid: Colors.black,
-        gridLine: Colors.deepPurpleAccent);
+        gridLine: Colors.deepPurpleAccent,
+        backgroundColor: Colors.black,
+        accentColor: Colors.white,
+        isDark: true);
   }
 
   factory FetrisColorTheme.grayScale() {
@@ -58,7 +67,10 @@ class FetrisColorTheme {
         l: Color(0xFF666666),
         s: Color(0xFF333333),
         grid: Colors.white,
-        gridLine: Colors.black);
+        gridLine: Colors.black,
+        backgroundColor: Colors.grey,
+        accentColor: Colors.black,
+        isDark: false);
   }
 
   factory FetrisColorTheme.material() {
@@ -69,18 +81,23 @@ class FetrisColorTheme {
         l: Colors.green,
         s: Colors.blue,
         grid: Colors.white,
-        gridLine: Colors.deepOrange);
+        gridLine: Colors.deepOrange,
+        backgroundColor: Colors.white,
+        accentColor: Colors.black,
+        isDark: false);
   }
 
   factory FetrisColorTheme.chill() {
     return FetrisColorTheme(
-      t: Color(0xFFE27d60),
-      straight: Color(0xFF85DCFF),
-      square: Color(0xFFE8A87C),
-      l: Color(0xFFC38D9E),
-      s: Color(0xFF41B3A3),
-      grid: Colors.white,
-      gridLine: Color(0xFF342582),
-    );
+        t: Color(0xFFE27d60),
+        straight: Color(0xFF85DCFF),
+        square: Color(0xFFE8A87C),
+        l: Color(0xFFC38D9E),
+        s: Color(0xFF41B3A3),
+        grid: Colors.white,
+        gridLine: Color(0xFF342582),
+        backgroundColor: Color(0xFF85DCCC),
+        accentColor: Colors.black,
+        isDark: false);
   }
 }

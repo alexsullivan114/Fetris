@@ -20,7 +20,7 @@ class DrawerContents extends StatelessWidget {
       return InkWell(
         child: ThemeListItem(pair.first, pair.second),
         onTap: () {
-          selectedTheme.add(pair.first);
+          selectedThemeSubject.add(pair.first);
           Navigator.pop(context);
         },
       );
@@ -111,12 +111,18 @@ class ThemeListItem extends StatelessWidget {
 class DrawerButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () {
-        Scaffold.of(context).openDrawer();
-      },
-      icon: Icon(Icons.menu),
-      color: Colors.black,
+    return StreamBuilder<FetrisColorTheme>(
+      stream: selectedTheme,
+      initialData: selectedThemeSubject.value,
+      builder: (context, snapshot) {
+        return IconButton(
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
+          icon: Icon(Icons.menu),
+          color: snapshot.data.accentColor,
+        );
+      }
     );
   }
 }

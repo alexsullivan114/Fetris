@@ -1,5 +1,7 @@
 import 'dart:async';
 
 import 'package:fetris/FetrisColorTheme.dart';
+import 'package:rxdart/rxdart.dart';
 
-StreamController<FetrisColorTheme> selectedTheme = StreamController();
+BehaviorSubject<FetrisColorTheme> selectedThemeSubject = BehaviorSubject.seeded(FetrisColorTheme.material());
+Stream<FetrisColorTheme> selectedTheme = selectedThemeSubject.stream;
