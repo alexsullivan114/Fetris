@@ -22,12 +22,9 @@ void main() async {
 Future<void> restoreTheme() async {
   final preferences = await SharedPreferences.getInstance();
   if (preferences.containsKey("theme")) {
-    print("Theme in preferences: ${await preferences.get("theme")}");
     Map<String, dynamic> themeMap = jsonDecode(await preferences.get("theme"));
-    print("Decoded theme: $themeMap");
     final restoredTheme = deserializeTheme(themeMap);
     selectedThemeSubject.value = restoredTheme;
-    print("Wahoo we're here!");
   }
 
   return;
@@ -36,7 +33,6 @@ Future<void> restoreTheme() async {
 void saveTheme(FetrisColorTheme theme) async {
   final preferences = await SharedPreferences.getInstance();
   await preferences.setString("theme", serializeTheme(theme));
-  print("Saving theme...");
 }
 
 void updateSystemChrome(FetrisColorTheme theme) {

@@ -59,6 +59,16 @@ class TetrominoePosition {
         old.tetrominoe, newCoordinates, old.rotation, newPivot, old.theme);
   }
 
+  factory TetrominoePosition.up(TetrominoePosition old) {
+    List<Position> newCoordinates = old.coordinates.map((position) {
+      return Position(position.x, position.y - 1);
+    }).toList();
+    Position newPivot = Position(old.pivot.x, old.pivot.y - 1);
+
+    return TetrominoePosition(
+        old.tetrominoe, newCoordinates, old.rotation, newPivot, old.theme);
+  }
+
   factory TetrominoePosition.rotated(TetrominoePosition old) {
     Rotation newRotation = old.rotation;
     if (old.tetrominoe == Tetrominoe.STRAIGHT) {

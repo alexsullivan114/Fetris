@@ -8,4 +8,9 @@ class TetrominoeBlock {
   final Tetrominoe originalTetrominoe;
 
   TetrominoeBlock(this.color, this.position, this.originalTetrominoe);
+
+  @override
+  String toString() {
+    return 'TetrominoeBlock{color: $color, position: $position, originalTetrominoe: $originalTetrominoe}';
+  }
 }

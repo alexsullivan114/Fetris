@@ -36,7 +36,6 @@ String serializeTheme(FetrisColorTheme theme) {
 }
 
 FetrisColorTheme deserializeTheme(Map<String, dynamic> themeMap) {
-  print("Our theme map: $themeMap");
   return FetrisColorTheme(
     t: deserializeColor(json.decode(themeMap["t"])),
     straight: deserializeColor(json.decode(themeMap["straight"])),

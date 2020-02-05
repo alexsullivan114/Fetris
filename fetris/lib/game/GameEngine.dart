@@ -71,7 +71,8 @@ class GameEngine {
     List<TetrominoeBlock> updatedFallenBlocks = List.from(_fallenBlocks);
     var addedPoints = 0;
     if (tetrominoePositionCollidesWithBottom(advancedActive) ||
-        tetrominoePositionCollidesWithExisting(advancedActive, updatedFallenBlocks)) {
+        tetrominoePositionCollidesWithExisting(
+            advancedActive, updatedFallenBlocks)) {
       TetrominoePosition nextActive = _generateNewTetrominoe();
       updatedFallenBlocks.addAll(active.blocks());
       final oldLength = updatedFallenBlocks.length;
@@ -79,24 +80,25 @@ class GameEngine {
       final newLength = updatedFallenBlocks.length;
       addedPoints = oldLength - newLength;
       updatedFallenBlocks = _decrementBlocks(updatedFallenBlocks);
-      active = _decreaseActive();
       maxVerticalBlockCount -= 1;
+      nextActive = TetrominoePosition.up(nextActive);
+      nextActive = _repositionNextActive(nextActive, updatedFallenBlocks);
+      active = nextActive;
       if (_gameOverConditionSatisfied(nextActive, updatedFallenBlocks)) {
         gameState = GameState.DONE;
-      } else {
-        active = nextActive;
-
       }
     } else {
-      active = advancedActive;
       updatedFallenBlocks = _clearCompleteLines(updatedFallenBlocks);
+      active = advancedActive;
     }
 
     score += addedPoints;
     _fallenBlocks = updatedFallenBlocks;
     if (addedPoints > 0) {
-      final theoreticalHeightIncrease = pow((addedPoints / maxHorizontalBlockCount).floor(), 2) + 1;
-      final actualIncrease= min(theoreticalHeightIncrease, originalMaxVerticalBlockCount - maxVerticalBlockCount);
+      final theoreticalHeightIncrease =
+          pow((addedPoints / maxHorizontalBlockCount).floor(), 2) + 1;
+      final actualIncrease = min(theoreticalHeightIncrease,
+          originalMaxVerticalBlockCount - maxVerticalBlockCount);
       maxVerticalBlockCount += actualIncrease;
       _fallenBlocks = _increaseHeight(actualIncrease);
     }
@@ -104,17 +106,28 @@ class GameEngine {
     return this;
   }
 
-  bool _gameOverConditionSatisfied(TetrominoePosition nextActive, List<TetrominoeBlock> blocks) {
-      if (tetrominoePositionCollidesWithExisting(nextActive, blocks)) {
-        return true;
+  TetrominoePosition _repositionNextActive(
+      TetrominoePosition nextActive, List<TetrominoeBlock> existingBlocks) {
+    // + 1 to account for the fact that all of the other blocks just got moved up.
+    // If we want the next active to sit above the other blocks we need to do this.
+    var repositionedNextActive = nextActive;
+    for (int i = 0; i < tetrominoeHeight(nextActive.tetrominoe) + 1; i++) {
+      final increasedActive = TetrominoePosition.down(repositionedNextActive);
+      if (!tetrominoePositionCollidesWithExisting(
+          increasedActive, existingBlocks)) {
+        repositionedNextActive = increasedActive;
       }
+    }
 
-      return blocks.any((block) => block.position.y < 0);
+    return repositionedNextActive;
   }
 
-  TetrominoePosition _decreaseActive() {
-    final newCoordinates = active.coordinates.map((position) => Position(position.x, position.y - 1)).toList();
-    return TetrominoePosition(active.tetrominoe, newCoordinates, active.rotation, active.pivot, active.theme);
+  bool _gameOverConditionSatisfied(
+      TetrominoePosition nextActive, List<TetrominoeBlock> blocks) {
+    if (tetrominoePositionCollidesWithExisting(nextActive, blocks)) {
+      return true;
+    }
+    return (blocks + nextActive.blocks()).any((block) => block.position.y < 0);
   }
 
   List<TetrominoeBlock> _decrementBlocks(List<TetrominoeBlock> blocks) {
@@ -260,8 +273,8 @@ class GameEngine {
     int horizontalMax = Random().nextInt(maxHorizontalBlockCount) -
         tetrominoeWidth(nextTetrominoe);
     int horizontal = max(0, horizontalMax);
-    return TetrominoePosition.fromOffset(
-        nextTetrominoe, 0, horizontal, Rotation.ZERO, theme);
+    return TetrominoePosition.fromOffset(nextTetrominoe,
+        -tetrominoeHeight(nextTetrominoe), horizontal, Rotation.ZERO, theme);
   }
 
   Tetrominoe _randomTetrominoe() {
