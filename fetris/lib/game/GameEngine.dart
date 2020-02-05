@@ -45,7 +45,7 @@ class GameEngine {
   GameEngine(FetrisColorTheme theme) {
     _theme = theme;
     active = TetrominoePosition.fromOffset(
-        Tetrominoe.STRAIGHT, 0, 0, Rotation.ZERO, theme);
+        Tetrominoe.S, 0, 0, Rotation.ZERO, theme);
   }
 
   void initialize(double screenWidth, double screenHeight) {

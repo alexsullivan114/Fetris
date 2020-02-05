@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-enum Tetrominoe { STRAIGHT, SQUARE, T, L, S }
+enum Tetrominoe { STRAIGHT, SQUARE, T, L, J, S, Z }
 
 int tetrominoeHeight(Tetrominoe tetrominoe) {
   switch (tetrominoe) {
@@ -16,7 +14,13 @@ int tetrominoeHeight(Tetrominoe tetrominoe) {
     case Tetrominoe.L:
       return 3;
       break;
+    case Tetrominoe.J:
+      return 3;
+      break;
     case Tetrominoe.S:
+      return 3;
+      break;
+    case Tetrominoe.Z:
       return 3;
       break;
   }
@@ -38,7 +42,13 @@ int tetrominoeWidth(Tetrominoe tetrominoe) {
     case Tetrominoe.L:
       return 2;
       break;
+    case Tetrominoe.J:
+      return 2;
+      break;
     case Tetrominoe.S:
+      return 2;
+      break;
+    case Tetrominoe.Z:
       return 2;
       break;
   }

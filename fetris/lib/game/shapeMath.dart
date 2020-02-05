@@ -52,6 +52,19 @@ List<Position> tetronimoeCoordinates(int verticalOffsetCount,
       positions.add(bottomLeft);
       positions.add(bottomRight);
       break;
+    case Tetrominoe.J:
+      Position topRight = Position(horizontalOffsetCount + 1, verticalOffsetCount);
+      Position middleRight =
+          Position(horizontalOffsetCount + 1, verticalOffsetCount + 1);
+      Position bottomRight =
+          Position(horizontalOffsetCount + 1, verticalOffsetCount + 2);
+      Position bottomLeft =
+          Position(horizontalOffsetCount, verticalOffsetCount + 2);
+      positions.add(topRight);
+      positions.add(middleRight);
+      positions.add(bottomRight);
+      positions.add(bottomLeft);
+      break;
     case Tetrominoe.S:
       Position topLeft = Position(horizontalOffsetCount, verticalOffsetCount);
       Position bottomLeft =
@@ -60,6 +73,20 @@ List<Position> tetronimoeCoordinates(int verticalOffsetCount,
           Position(horizontalOffsetCount + 1, verticalOffsetCount + 1);
       Position bottomRight =
           Position(horizontalOffsetCount + 1, verticalOffsetCount + 2);
+
+      positions.add(topRight);
+      positions.add(bottomRight);
+      positions.add(topLeft);
+      positions.add(bottomLeft);
+      break;
+    case Tetrominoe.Z:
+      Position topLeft = Position(horizontalOffsetCount + 1, verticalOffsetCount);
+      Position bottomLeft =
+      Position(horizontalOffsetCount + 1, verticalOffsetCount + 1);
+      Position topRight =
+      Position(horizontalOffsetCount, verticalOffsetCount + 1);
+      Position bottomRight =
+      Position(horizontalOffsetCount, verticalOffsetCount + 2);
 
       positions.add(topRight);
       positions.add(bottomRight);
@@ -92,7 +119,15 @@ Position calculatePivot(
       x = horizontalOffset;
       y = verticalOffset + 1;
       break;
+    case Tetrominoe.J:
+      x = horizontalOffset;
+      y = verticalOffset + 1;
+      break;
     case Tetrominoe.S:
+      x = horizontalOffset + 1;
+      y = verticalOffset + 1;
+      break;
+    case Tetrominoe.Z:
       x = horizontalOffset + 1;
       y = verticalOffset + 1;
       break;
