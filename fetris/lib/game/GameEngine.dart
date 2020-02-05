@@ -68,14 +68,20 @@ class GameEngine {
       return this;
     }
     TetrominoePosition advancedActive = TetrominoePosition.down(active);
+    List<TetrominoeBlock> updatedFallenBlocks = List.from(_fallenBlocks);
+    var addedPoints = 0;
     if (tetrominoePositionCollidesWithBottom(advancedActive) ||
-        tetrominoePositionCollidesWithExisting(advancedActive)) {
+        tetrominoePositionCollidesWithExisting(advancedActive, updatedFallenBlocks)) {
       TetrominoePosition nextActive = _generateNewTetrominoe();
-      _fallenBlocks.addAll(active.blocks());
-      _fallenBlocks = _decreaseFallenBlocks();
+      updatedFallenBlocks.addAll(active.blocks());
+      final oldLength = updatedFallenBlocks.length;
+      updatedFallenBlocks = _clearCompleteLines(updatedFallenBlocks);
+      final newLength = updatedFallenBlocks.length;
+      addedPoints = oldLength - newLength;
+      updatedFallenBlocks = _decrementBlocks(updatedFallenBlocks);
       active = _decreaseActive();
       maxVerticalBlockCount -= 1;
-      if (_gameOverConditionSatisfied(nextActive, _fallenBlocks)) {
+      if (_gameOverConditionSatisfied(nextActive, updatedFallenBlocks)) {
         gameState = GameState.DONE;
       } else {
         active = nextActive;
@@ -83,14 +89,13 @@ class GameEngine {
       }
     } else {
       active = advancedActive;
+      updatedFallenBlocks = _clearCompleteLines(updatedFallenBlocks);
     }
 
-    final newList = _clearCompleteLines(_fallenBlocks);
-    final addedPoints = _fallenBlocks.length - newList.length;
     score += addedPoints;
-    _fallenBlocks = newList;
+    _fallenBlocks = updatedFallenBlocks;
     if (addedPoints > 0) {
-      final theoreticalHeightIncrease = (addedPoints / maxHorizontalBlockCount).floor() * 2;
+      final theoreticalHeightIncrease = pow((addedPoints / maxHorizontalBlockCount).floor(), 2) + 1;
       final actualIncrease= min(theoreticalHeightIncrease, originalMaxVerticalBlockCount - maxVerticalBlockCount);
       maxVerticalBlockCount += actualIncrease;
       _fallenBlocks = _increaseHeight(actualIncrease);
@@ -100,7 +105,7 @@ class GameEngine {
   }
 
   bool _gameOverConditionSatisfied(TetrominoePosition nextActive, List<TetrominoeBlock> blocks) {
-      if (tetrominoePositionCollidesWithExisting(nextActive)) {
+      if (tetrominoePositionCollidesWithExisting(nextActive, blocks)) {
         return true;
       }
 
@@ -112,8 +117,8 @@ class GameEngine {
     return TetrominoePosition(active.tetrominoe, newCoordinates, active.rotation, active.pivot, active.theme);
   }
 
-  List<TetrominoeBlock>_decreaseFallenBlocks() {
-    return _fallenBlocks.map((block) {
+  List<TetrominoeBlock> _decrementBlocks(List<TetrominoeBlock> blocks) {
+    return blocks.map((block) {
       final newPosition = Position(block.position.x, block.position.y - 1);
       return TetrominoeBlock(
           block.color, newPosition, block.originalTetrominoe);
@@ -137,7 +142,7 @@ class GameEngine {
       blockCountMap[block.position.y] = existingCount + 1;
     });
 
-    var returnList = List<TetrominoeBlock>.from(_fallenBlocks);
+    var returnList = List<TetrominoeBlock>.from(blocks);
     final List<int> removedPositions = [];
     blockCountMap.forEach((verticalPosition, count) {
       if (count >= maxHorizontalBlockCount) {
@@ -164,7 +169,7 @@ class GameEngine {
 
   List<TetrominoeBlock> _projectedFinalActive(TetrominoePosition active) {
     var old = active;
-    while (!tetrominoePositionCollidesWithExisting(active) &&
+    while (!tetrominoePositionCollidesWithExisting(active, _fallenBlocks) &&
         !tetrominoePositionCollidesWithBottom(active)) {
       old = active;
       active = TetrominoePosition.down(active);
@@ -176,8 +181,9 @@ class GameEngine {
   }
 
   bool tetrominoePositionCollidesWithExisting(
-      TetrominoePosition tetrominoePosition) {
-    for (TetrominoeBlock existing in _fallenBlocks) {
+      TetrominoePosition tetrominoePosition,
+      List<TetrominoeBlock> existingBlocks) {
+    for (TetrominoeBlock existing in existingBlocks) {
       if (tetrominoePosition.collidesWith(existing.position)) {
         return true;
       }
@@ -209,7 +215,7 @@ class GameEngine {
 
   GameEngine left() {
     TetrominoePosition newActive = TetrominoePosition.left(active);
-    if (!tetrominoePositionCollidesWithExisting(newActive) &&
+    if (!tetrominoePositionCollidesWithExisting(newActive, _fallenBlocks) &&
         !tetrominoePositionOutsideBounds(newActive)) {
       active = newActive;
     }
@@ -220,7 +226,7 @@ class GameEngine {
   GameEngine down() {
     var old = active;
     TetrominoePosition newActive = TetrominoePosition.down(old);
-    while (!tetrominoePositionCollidesWithExisting(newActive) &&
+    while (!tetrominoePositionCollidesWithExisting(newActive, _fallenBlocks) &&
         !tetrominoePositionCollidesWithBottom(newActive)) {
       old = newActive;
       newActive = TetrominoePosition.down(newActive);
@@ -231,7 +237,7 @@ class GameEngine {
 
   GameEngine right() {
     TetrominoePosition newActive = TetrominoePosition.right(active);
-    if (!tetrominoePositionCollidesWithExisting(newActive) &&
+    if (!tetrominoePositionCollidesWithExisting(newActive, _fallenBlocks) &&
         !tetrominoePositionOutsideBounds(newActive)) {
       active = newActive;
     }
@@ -241,7 +247,7 @@ class GameEngine {
 
   GameEngine rotate() {
     TetrominoePosition newActive = TetrominoePosition.rotated(active);
-    if (!tetrominoePositionCollidesWithExisting(newActive) &&
+    if (!tetrominoePositionCollidesWithExisting(newActive, _fallenBlocks) &&
         !tetrominoePositionOutsideBounds(newActive)) {
       active = newActive;
     }
