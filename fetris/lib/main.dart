@@ -39,11 +39,10 @@ void updateSystemChrome(FetrisColorTheme theme) {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: theme.backgroundColor,
     statusBarBrightness: theme.isDark ? Brightness.light : Brightness.dark,
-    statusBarIconBrightness:
-    theme.isDark ? Brightness.light : Brightness.dark,
+    statusBarIconBrightness: theme.isDark ? Brightness.light : Brightness.dark,
     systemNavigationBarColor: theme.backgroundColor,
     systemNavigationBarIconBrightness:
-    theme.isDark ? Brightness.light : Brightness.dark,
+        theme.isDark ? Brightness.light : Brightness.dark,
   ));
 }
 
@@ -59,11 +58,21 @@ class MyApp extends StatelessWidget {
           drawer: Drawer(
             child: DrawerContents(),
           ),
-          body: SafeArea(
-              child: Stack(children: [
-            TetrisBoard(),
-            DrawerButton(),
-          ]))),
+          body: StreamBuilder<FetrisColorTheme>(
+              stream: selectedTheme,
+              builder: (context, snapshot) {
+                final theme = snapshot.data != null
+                    ? snapshot.data
+                    : selectedThemeSubject.value;
+                return Container(
+                  color: theme.backgroundColor,
+                  child: SafeArea(
+                      child: Stack(children: [
+                    TetrisBoard(),
+                    DrawerButton(),
+                  ])),
+                );
+              })),
     );
   }
 }
