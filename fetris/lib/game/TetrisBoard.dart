@@ -1,6 +1,5 @@
 import'dart:async';
 
-import 'package:fetris/FetrisColorTheme.dart';
 import 'GamePad.dart';
 import 'package:fetris/streams/SelectedTheme.dart';
 import 'package:flutter/material.dart';
