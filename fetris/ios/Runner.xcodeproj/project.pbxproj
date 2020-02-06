@@ -145,7 +145,6 @@
 				C50F872D8FFC201CEA8FAE5B /* Pods-Runner.release.xcconfig */,
 				F67DDB8A92AA450B28809055 /* Pods-Runner.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -389,7 +388,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = alexsullivan.com.fetris;
+				PRODUCT_BUNDLE_IDENTIFIER = alexsullivan.com.chillblocks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -518,7 +517,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = alexsullivan.com.fetris;
+				PRODUCT_BUNDLE_IDENTIFIER = alexsullivan.com.chillblocks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -541,7 +540,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = alexsullivan.com.fetris;
+				PRODUCT_BUNDLE_IDENTIFIER = alexsullivan.com.chillblocks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
