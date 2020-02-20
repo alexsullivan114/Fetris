@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "217534770507",
+    "firebase_url": "https://fetris-88476.firebaseio.com",
+    "project_id": "fetris-88476",
+    "storage_bucket": "fetris-88476.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217534770507:android:750abf26af287ee55f0cce",
+        "android_client_info": {
+          "package_name": "alexsullivan.com.chillblocks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "217534770507-pg8el9a3m372vj9vf342hqtmdhbuge5c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCH9iwdYgQsuy8VLVCZKXdtN3vJLGDnhX4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "217534770507-pg8el9a3m372vj9vf342hqtmdhbuge5c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
